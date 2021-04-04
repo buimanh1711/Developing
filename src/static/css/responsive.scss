@@ -1,0 +1,31 @@
+@media (max-width: 479.98px) {
+  #mobile {
+    .menu-container {
+      left: unset;
+      width: 300px;
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+}
+
+@media (max-width: 767.98px) {
+  #desktop {
+    display: none
+  }
+
+  #mobile {
+    display: block;
+  }
+
+  #header {
+    background: white;
+  }
+}
+
+@media (max-width: 991.98px) {
+}
+
+@media (max-width: 1199.98px) {
+}

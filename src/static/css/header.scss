@@ -1,0 +1,136 @@
+#header {
+  background: #1ab7ea;
+  border-bottom: 1px solid rgba(83, 79, 79, 0.171);;
+
+}
+
+#desktop {
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .avt-wrapper {
+      width: 200px;
+      img {
+        width: 100%;
+      }
+    }
+
+    .header-right-wrapper {
+      display: flex;
+      align-items: center;
+
+      a {
+        margin: auto 8px;
+        color: white;
+        text-decoration: none;
+        span {
+          margin-left: 8px;
+        }
+      }
+      a:hover {
+        color: rgba(255, 255, 255, 0.747);
+        transition: ease 0.5s;
+      }
+
+      button {
+        position: relative;
+        background: transparent;
+        color: white;
+        cursor: pointer;
+        span {
+          margin: auto 4px;
+        }
+
+        .child-menu {
+          position: absolute;
+          ul {
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(163, 159, 159, 0.158);
+          }
+          li {
+            width: 140px;
+            padding: 10px 0px;
+            list-style-type: none;
+          }
+
+          li:hover {
+            background: rgba(89, 136, 180, 0.116);
+            transition: ease .5s
+          }
+          
+          a {
+            color: rgb(99, 92, 133) !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+#mobile {
+  display: none;
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 86px;
+    .avt-wrapper {
+      width: 200px;
+
+      img {
+        width: 100%;
+      }
+    }
+    .btn-wrapper {
+      button {
+        background: none;
+        font-size: 1.6rem;
+        color: #1ab7ea
+      }
+    }
+  }
+
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(136, 130, 130, 0.322);
+    backdrop-filter: blur(4px);
+  }
+
+  .menu-container {
+    padding-top: 27px;
+    transition: ease .5s;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    background: #1ab7ea;
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+    li {
+      list-style-type: none;
+      padding: 8px 20px;
+
+      a {
+        margin: auto 8px;
+        color: white;
+        text-decoration: none;
+        span {
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+}
