@@ -10,16 +10,18 @@
 
 body {
   font-family: fontRegular;
+  color: rgb(51, 47, 47);
 }
 
 a {
-  color: rgb(26, 25, 25);
+  color: rgb(51, 49, 49);
   text-decoration: none;
 }
 
 button {
   border: none;
   outline: none !important;
+  cursor: pointer;
 }
 
 ul {

@@ -33,7 +33,12 @@ const Header = () => {
                   <span>
                     Mạnh
                 </span>
-                  <i className="fas fa-caret-down"></i>
+                  {
+                    childMenu &&
+                    <i className="fas fa-sort-up"></i>
+                    ||
+                    <i className="fas fa-caret-down"></i>
+                  }
                   <div className='child-menu' hidden={!childMenu}>
                     <div className='child-menu-container'>
                       <ul>
@@ -54,7 +59,7 @@ const Header = () => {
                           </Link>
                         </li>
                         <li>
-                          <Link to=''>
+                          <Link to='/login'>
                             <i className="fas fa-sign-out-alt"></i>
                             <span>
                               Đăng xuất

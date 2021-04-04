@@ -1,6 +1,6 @@
 import { createContext, useReducer, useEffect } from 'react'
 import reducer from './reducer'
-import api from '../utils/api'
+import api from '../utils/axios'
 
 export const DataContext = createContext()
 
@@ -14,10 +14,10 @@ export const DataProvider = (props) => {
     login: false,
     token: null,
     cart: [],
-    loading: true
+    loading: false
   }
 
-  const [state, dispatch] = useReducer(initialState, reducer)
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
