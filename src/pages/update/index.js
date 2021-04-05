@@ -118,7 +118,7 @@ const Update = () => {
     formData.append('slug', slug)
     newCate && formData.append('newCate', newCate)
 
-    api('POST', `/api/posts/update/${originData._id}`, formData)
+    api('POST', `/api/products/update/${originData._id}`, formData)
       .then(res => {
         if (res.data && res.data.status) {
           history.replace({ pathname: '/' })

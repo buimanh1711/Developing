@@ -8,11 +8,12 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 const defaultValue = {
   select: 'Choose',
-  name: 'Name',
+  name: 'Product\'s name',
   category: 'Category',
   source: null,
-  minPrice: 0,
-  quickPrice: 100
+  minPrice: '<start price>',
+  quickPrice: '<sell price>',
+  producer: 'Product\'s producer'
 }
 
 const Create = () => {
@@ -21,9 +22,9 @@ const Create = () => {
   const [name, setName] = useState(defaultValue.name)
   const [cate, setCate] = useState(defaultValue.category)
   const [time, setTime] = useState(null)
-  const [minPrice, setMinPrice] = useState(0)
-  const [quickPrice, setQuickPrice] = useState(0)
-  const [producer, setProducer] = useState('')
+  const [minPrice, setMinPrice] = useState(defaultValue.minPrice)
+  const [quickPrice, setQuickPrice] = useState(defaultValue.quickPrice)
+  const [producer, setProducer] = useState(defaultValue.producer)
   const [file, setFile] = useState('')
   const [data, getData] = useState({ name: '', path: '/images/default_img.jpg' })
   const [categories, setCategories] = useState([])
@@ -42,8 +43,9 @@ const Create = () => {
     api('GET', '/api/auth')
       .then(res => {
         if (res.data && !res.data.status) {
+          console.log(res)
           setTimeout(() => {
-            history.replace({ pathname: '/sign-in' })
+            history.replace({ pathname: '/login' })
           }, 1000)
         }
       })
@@ -172,7 +174,7 @@ const Create = () => {
           </Link>
           <h1> Create your own post</h1>
           <div className='row'>
-            <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
+            <div className='col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
               <div className='create-form'>
                 <div className='create-title'>
                   <label htmlFor='create_title'>Tên</label>
@@ -258,6 +260,9 @@ const Create = () => {
                     </p>
                     <span to='/' className='first-title'>
                       {name}
+                    </span>
+                    <span to='/' className='first-title'>
+                      {producer}
                     </span>
                     <p color='black'>
                       {minPrice}

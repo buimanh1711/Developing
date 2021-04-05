@@ -76,17 +76,20 @@ const SignIn = (props) => {
           console.log(res)
           if (res.data && res.data.status) {
             const { user } = res.data
+            console.log(user)
+            console.log(res.data)
             localStorage.setItem('login', true)
-            localStorage.setItem('id', user.id)
+            localStorage.setItem('id', user._id)
             localStorage.setItem('image', user.image)
             localStorage.setItem('email', user.email)
-            localStorage.setItem('firstname', user.firstname)
-            localStorage.setItem('lastname', user.lastname)
+            localStorage.setItem('firstName', user.firstName)
+            localStorage.setItem('lastName', user.lastName)
             localStorage.setItem('phone', user.phone)
             localStorage.setItem('role', user.role)
-            Cookies.set('userToken', user.token)
+            Cookies.set('userToken', res.data.token)
             dispatch(toggleLoading(false))
             dispatch(getUser())
+            console.log(state)
             history.replace({ pathname: '/' })
           }
 

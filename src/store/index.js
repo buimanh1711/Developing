@@ -12,7 +12,6 @@ export const DataProvider = (props) => {
     },
     user: {},
     login: false,
-    token: null,
     cart: [],
     loading: false
   }

@@ -1,7 +1,8 @@
 import MainLayout from './layouts'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { DataContext } from './store'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
+import { getUser } from './store/actions'
 
 import './static/css/reset.css'
 import './static/css/header.scss'
@@ -23,6 +24,10 @@ import Loading from './components/Loading'
 
 const MyApp = () => {
   const { state, dispatch } = useContext(DataContext)
+  useEffect(() => {
+    dispatch(getUser())
+    console.log(state)
+  }, [])
 
   return (
     <>
@@ -38,13 +43,13 @@ const MyApp = () => {
           <Route path='/register'>
             <SignUp />
           </Route>
-          <Route path='/product/create'>
+          <Route path='/products/create'>
             <Create />
           </Route>
-          <Route path='/product/update/:productId'>
+          <Route path='/products/update/:productId'>
             <Update />
           </Route>
-          <Route path='/product'>
+          <Route path='/products'>
             <MainLayout>
               <Product />
             </MainLayout>

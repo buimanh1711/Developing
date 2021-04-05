@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { DataContext } from '../store'
 
 const Header = () => {
+  const { state, dispatch } = useContext(DataContext)
+
   const [childMenu, setChildMenu] = useState(false)
   const [mbMenu, setMbMenu] = useState(false)
   return (
@@ -22,54 +25,62 @@ const Header = () => {
                     Đấu giá của tôi
                 </span>
                 </Link>
-                <Link to=''>
-                  <i className="fas fa-shopping-cart"></i>
+                <Link to='/products/create'>
+                  <i className="fas fa-money-bill-wave"></i>
                   <span>
-                    Rỏ hàng
+                    Mở đấu giá
                 </span>
                 </Link>
-                <button onClick={() => setChildMenu(!childMenu)}>
-                  <i className="fas fa-user"></i>
-                  <span>
-                    Mạnh
-                </span>
-                  {
-                    childMenu &&
-                    <i className="fas fa-sort-up"></i>
-                    ||
-                    <i className="fas fa-caret-down"></i>
-                  }
-                  <div className='child-menu' hidden={!childMenu}>
-                    <div className='child-menu-container'>
-                      <ul>
-                        <li>
-                          <Link to=''>
-                            <i className="fas fa-user"></i>
-                            <span>
-                              Cá nhân
+                {
+                  state.login &&
+                  <button onClick={() => setChildMenu(!childMenu)}>
+                    <i className="fas fa-user"></i>
+                    <span>
+                      {`${state.user && state.user.firstName} ${state.user && state.user.lastName}`}
+                    </span>
+                    {
+                      childMenu &&
+                      <i className="fas fa-sort-up"></i>
+                      ||
+                      <i className="fas fa-caret-down"></i>
+                    }
+                    <div className='child-menu' hidden={!childMenu}>
+                      <div className='child-menu-container'>
+                        <ul>
+                          <li>
+                            <Link to=''>
+                              <i className="fas fa-user"></i>
+                              <span>
+                                Cá nhân
                             </span>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to=''>
-                            <i className="fas fa-map-marker-alt"></i>
-                            <span>
-                              Địa chỉ
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to=''>
+                              <i className="fas fa-map-marker-alt"></i>
+                              <span>
+                                Địa chỉ
                             </span>
-                          </Link>
-                        </li>
-                        <li>
-                          <Link to='/login'>
-                            <i className="fas fa-sign-out-alt"></i>
-                            <span>
-                              Đăng xuất
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to='/login'>
+                              <i className="fas fa-sign-out-alt"></i>
+                              <span>
+                                Đăng xuất
                             </span>
-                          </Link>
-                        </li>
-                      </ul>
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
+                  </button>
+                  ||
+                  <div className='sign-container'>
+                    <Link to='/login' className='login-btn'>Đăng nhập</Link>
+                    <Link to='/register' className='login-btn'>Đăng kí</Link>
                   </div>
-                </button>
+                }
               </div>
             </div>
           </div>
@@ -88,10 +99,10 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to=''>
-                      <i className="fas fa-shopping-cart"></i>
+                    <Link to='/products/create'>
+                      <i className="fas fa-money-bill-wave"></i>
                       <span>
-                        Rỏ hàng
+                        Mở đấu giá
                       </span>
                     </Link>
                   </li>
@@ -112,7 +123,7 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to=''>
+                    <Link to='/login'>
                       <i className="fas fa-sign-out-alt"></i>
                       <span>
                         Đăng xuất

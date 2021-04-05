@@ -3,9 +3,8 @@ import * as Actions from './constant'
 const reducer = (state, action) => {
   switch (action.type) {
     case Actions.GET_USER: {
-
-      const login = localStorage.getItem('logged')
-      const token = localStorage.getItem('token')
+      console.log('manh')
+      const login = localStorage.getItem('login')
       const firstName = localStorage.getItem('firstName')
       const lastName = localStorage.getItem('lastName')
       const image = localStorage.getItem('image')
@@ -14,10 +13,9 @@ const reducer = (state, action) => {
 
       return {
         ...state,
+        login,
         user: {
-          login,
           id,
-          token,
           firstName,
           lastName,
           image,
