@@ -50,7 +50,6 @@ const Update = () => {
       .then(() => {
         api('GET', 'api/categories')
           .then(res => {
-            console.log(res)
             if (res.data && res.data.category) {
               setCategories(res.data.category)
             }
