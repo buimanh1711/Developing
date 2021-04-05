@@ -121,6 +121,7 @@ const SignUp = (props) => {
             dispatch(toggleLoading(true))
             api('POST', '/api/register', user)
                 .then(res => {
+                    console.log(res.data)
                     if (res.data && res.data.status) {
                         dispatch(toggleLoading(false))
                         history.replace({ pathname: '/login' })

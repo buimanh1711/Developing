@@ -9,12 +9,14 @@ import './static/css/footer.scss'
 import './static/css/product.scss'
 import './static/css/sign.scss'
 import './static/css/home.scss'
+import './static/css/create.scss'
 import './static/css/main.scss'
 import './static/css/responsive.scss'
 
 import Product from './pages/product'
 import SignIn from './pages/sign/sign-in'
 import SignUp from './pages/sign/sign-up'
+import Create from './pages/create'
 import Home from './pages/home'
 import Loading from './components/Loading'
 
@@ -34,6 +36,9 @@ const MyApp = () => {
           </Route>
           <Route path='/register'>
             <SignUp />
+          </Route>
+          <Route path='/product/create'>
+            <Create />
           </Route>
           <Route path='/product'>
             <MainLayout>

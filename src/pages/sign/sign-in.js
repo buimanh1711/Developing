@@ -4,6 +4,7 @@ import { usernameValidate } from '../../utils/validate'
 import { getUser, toggleLoading } from '../../store/actions'
 import { DataContext } from '../../store/index'
 import api from '../../utils/axios'
+import Cookies from 'js-cookie'
 
 const SignIn = (props) => {
 
@@ -72,10 +73,10 @@ const SignIn = (props) => {
       dispatch(toggleLoading(true))
       api('POST', '/api/login', userData)
         .then(res => {
+          console.log(res)
           if (res.data && res.data.status) {
             const { user } = res.data
             localStorage.setItem('login', true)
-            localStorage.setItem('token', user.token)
             localStorage.setItem('id', user.id)
             localStorage.setItem('image', user.image)
             localStorage.setItem('email', user.email)
@@ -83,6 +84,7 @@ const SignIn = (props) => {
             localStorage.setItem('lastname', user.lastname)
             localStorage.setItem('phone', user.phone)
             localStorage.setItem('role', user.role)
+            Cookies.set('userToken', user.token)
             dispatch(toggleLoading(false))
             dispatch(getUser())
             history.replace({ pathname: '/' })
