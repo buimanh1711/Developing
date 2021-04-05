@@ -12,69 +12,79 @@ const defaultValue = {
 }
 
 const Update = () => {
-  const postId = useParams().postId || null
 
   const history = useHistory()
+  const productId = useParams().productId || null
 
-  const [title, setTitle] = useState(defaultValue.title)
-  const [desc, setDesc] = useState(defaultValue.shortDesc)
+  const [name, setName] = useState(defaultValue.name)
   const [cate, setCate] = useState(defaultValue.category)
-  const [file, setFile] = useState(null)
-  const [data, getData] = useState({ name: '', path: '/images/defaultimg.jpg' })
+  const [minPrice, setMinPrice] = useState(defaultValue.minPrice)
+  const [quickPrice, setQuickPrice] = useState(defaultValue.quickPrice)
+  const [file, setFile] = useState('')
+  const [data, getData] = useState({ name: '', path: '/images/default_img.jpg' })
   const [categories, setCategories] = useState([])
   const [select, setSelect] = useState(false)
+  const [content, setContent] = useState('')
+  const [time, setTime] = useState(null)
+  const [producer, setProducer] = useState('')
+
+  const nameEl = useRef(null)
+  const cateEl = useRef(null)
+  const minPriceEl = useRef(null)
+  const quickPriceEl = useRef(null)
+  const producerEl = useRef(null)
+  const newCateEl = useRef(null)
+  const timeEl = useRef(null)
+
   const [originData, setOriginData] = useState({})
 
-  const titleEl = useRef(null)
-  const cateEl = useRef(null)
-  const shortDescEl = useRef(null)
-  const newCateEl = useRef(null)
-  const sourceEl = useRef(null)
-  const [content, setContent] = useState('')
+  useEffect(() => {
+    api('GET', '/api/auth')
+      .then(res => {
+        if (res.data && !res.data.status) {
+          setTimeout(() => {
+            history.replace({ pathname: '/sign-in' })
+          }, 1000)
+        }
+      })
+      .then(() => {
+        api('GET', 'api/categories')
+          .then(res => {
+            console.log(res)
+            if (res.data && res.data.category) {
+              setCategories(res.data.category)
+            }
+          })
+      })
+      .catch(err => console.log(err))
 
-  // useEffect(() => {
-  //   api('GET', '/api/auth')
-  //     .then(res => {
-  //       if (res.data && !res.data.status) {
-  //         setTimeout(() => {
-  //           history.replace({ pathname: '/sign-in' })
-  //         }, 1000)
-  //       }
-  //     })
-  //     .then(() => {
-  //       api('GET', 'api/posts/create')
-  //         .then(res => {
-  //           if (res.data && res.data.category) {
-  //             setCategories(res.data.category)
-  //           }
-  //         })
-  //     })
-  //     .catch(err => console.log(err))
+    api('GET', `api/products/update/${productId}`)
+      .then(res => {
+        if(res.data && res.data.status) {
+          console.log(res.data)
+          setOriginData(res.data.product)
+          setContent(res.data.product.content)
+          cateEl.current.value = JSON.stringify(res.data.product.category)
+          setCate(res.data.product.category && res.data.product.category.name || null)
+          setName(res.data.product.name)
+          setMinPrice(res.data.product.minPrice)
+          setQuickPrice(res.data.product.quickPrice)
+          setTime(res.data.product.time)
+          setProducer(res.data.product.producer)
 
-  //   api('GET', `api/posts/update/${postId}`)
-  //     .then(res => {
-  //       if(res.data && res.data.status) {
-  //         setOriginData(res.data.post)
-  //         titleEl.current.value = res.data.post.title
-  //         shortDescEl.current.value = res.data.post.description
-  //         setContent(res.data.post.content)
-  //         cateEl.current.value = JSON.stringify(res.data.post.category)
-  //         setCate(res.data.post.category && res.data.post.category.name || null)
-  //         setTitle(res.data.post.title)
-  //         setDesc(res.data.post.description)
-  //         getData({
-  //           ...data,
-  //           path: getImage(res.data.post.image)
-  //         })
-  //       }
-  //     })
-  //     .catch(err => console.log(err))
+          getData({
+            ...data,
+            path: getImage(res.data.product.image)
+          })
+        }
+      })
+      .catch(err => console.log(err))
 
-  // }, [])
+  }, [])
 
   const handleChange = (e) => {
     const selectedFile = e.target.files[0]
-    
+
     setFile(selectedFile)
     const reader = new FileReader()
     reader.onloadend = (e) => {
@@ -90,22 +100,22 @@ const Update = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const formData = new FormData()
-    const currentTitle = titleEl.current.value
-    const currentShortDesc = shortDescEl.current.value
-    const currentSource = sourceEl.current.value.length > 0 && sourceEl.current.value || originData.source
+    const currentName = nameEl.current.value
     const cateObj = cateEl.current.value
     const newCate = newCateEl.current.value.length > 0 && newCateEl.current.value || null
-    const slug = toSlug(currentTitle)
+    const slug = toSlug(currentName)
     const currentCate = cateObj !== defaultValue.select && JSON.parse(cateObj)
 
-    formData.append('title', currentTitle)
-    formData.append('shortDesc', currentShortDesc)
+    formData.append('name', currentName)
     formData.append('content', content)
-    formData.append('source', currentSource)
     currentCate && formData.append('categoryId', currentCate._id)
     formData.append('image', file || originData.image)
+    formData.append('time', timeEl.current.value)
+    formData.append('minPrice', minPriceEl.current.value)
+    formData.append('quickPrice', quickPriceEl.current.value)
+    formData.append('producer', producerEl.current.value)
     formData.append('oldFile', originData.image)
-    formData.append('author', originData.author && originData.author._id)
+    formData.append('seller', originData.seller && originData.seller._id)
     formData.append('slug', slug)
     newCate && formData.append('newCate', newCate)
 
@@ -121,12 +131,44 @@ const Update = () => {
 
   }
 
-  const changeTitle = (e) => {
+  const changeName = (e) => {
     let value = e.target.value
     if (value === '') {
-      value = originData.title
+      value = originData.name
     }
-    setTitle(value)
+    setName(value)
+  }
+
+  const changeMinPrice = (e) => {
+    let value = e.target.value
+    if (value === '') {
+      value = originData.minPrice
+    }
+    setMinPrice(value)
+  }
+
+  const changeQuickPrice = (e) => {
+    let value = e.target.value
+    if (value === '') {
+      value = originData.quickPrice
+    }
+    setQuickPrice(value)
+  }
+
+  const changeProducer = (e) => {
+    let value = e.target.value
+    if (value === '') {
+      value = originData.producer
+    }
+    setProducer(value)
+  }
+
+  const changeTime = (e) => {
+    let value = e.target.value
+    if (value === '') {
+      value = originData.time
+    }
+    setTime(value)
   }
 
   const createNewCate = (e) => {
@@ -154,15 +196,6 @@ const Update = () => {
     setCate(value.name)
   }
 
-  const changeDesc = (e) => {
-    let value = e.target.value
-    if (value === '') {
-      value = originData.description
-      e.target.value = JSON.stringify(originData.category)
-    }
-    setDesc(value)
-  }
-
   return (
     <div className='create-post'>
       <div className='create-container'>
@@ -174,17 +207,17 @@ const Update = () => {
           <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
             <div className='create-form'>
               <div className='create-title'>
-                <label htmlFor='create_title'>Title</label>
-                <input ref={titleEl} onChange={(e) => { changeTitle(e) }} placeholder='ex: How to create React app' id='create_title' />
-                <p>The title of the post, max 128 charecters</p>
+                <label htmlFor='create_title'>Tên</label>
+                <input ref={nameEl} defaultValue={name} onChange={(e) => { changeName(e) }} placeholder='ex: How to create React app' id='create_title' />
+                <p>Tên sản phẩm</p>
               </div>
               <div className='create-category'>
-                <label htmlFor='crate-cate-select'>Category:</label>
+                <label htmlFor='crate-cate-select'>Thể loại:</label>
                 <select disabled={select} onChange={(e) => changeCate(e)} id='create-cate-select' ref={cateEl} name="categories" id="categories">
                   {
                     categories && categories.length > 0 &&
                     categories.map(item =>
-                      <option key={item.id} selected={item.id === originData.category._id} value={JSON.stringify(item)}>
+                      <option key={item.id} selected={item.id === (originData.category && originData.category._id)} value={JSON.stringify(item)}>
                         {item.name}
                       </option>
                     )
@@ -195,37 +228,50 @@ const Update = () => {
                 <label style={{ marginLeft: 20 }} htmlFor='create-cate-create'>Create New</label>
                 <input ref={newCateEl} onChange={createNewCate} id='create-cate-create' />
               </div>
+              <div className='create-producer'>
+                <label htmlFor='create_producer'>Nhãn hiệu</label>
+                <input defaultValue={originData.producer} onChange={changeProducer} ref={producerEl} id='create_producer' />
+                <p>Tên hãng, nhà sản xuất</p>
+              </div>
+              <div className='create-price'>
+                <label htmlFor='create_price'>Giá sàn</label>
+                <input defaultValue={originData.minPrice} onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
+                <p>Mức giá tối thiểu của sản phẩm</p>
+              </div>
+              <div className='create-price'>
+                <label htmlFor='create_price'>Giá trần</label>
+                <input defaultValue={originData.quickPrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
+                <p>Mức giá mua luôn của sản phẩm</p>
+              </div>
+              <div className='create-time'>
+                <label htmlFor='create_price'>Thời gian</label>
+                <input defaultValue={originData.time} onChange={changeTime} ref={timeEl} type='date' id='create_price' />
+                <p>Thời gian hết hạn đấu giá</p>
+              </div>
+
               <div className='create-img'>
                 <label htmlFor='create_image'>Thumbnail image</label>
                 <input onChange={handleChange} type='file' id='create_image' />
                 <p>The main image of the post</p>
               </div>
-              <div className='create-shortdesc'>
-                <label htmlFor='create_shortdesc'>Short description</label>
-                <textarea ref={shortDescEl} onChange={(e) => { changeDesc(e) }} id='create_shortdesc' />
-                <p>The short description on the thumb, , max 512 charecters </p>
-              </div>
-              <div className='create-source'>
-                <label htmlFor='create_source'>Source</label>
-                <textarea ref={sourceEl} id='create_source' placeholder='if you share from another source' />
-              </div>
+
               <div className='create-content'>
                 <label htmlFor='create_content'>Content</label>
                 <CKEditor
-                className='about'
-                    editor={ ClassicEditor }
-                    data={content}
-                    onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                    } }
-                    onChange={ ( event, editor ) => {
-                        const data = editor.getData();
-                        setContent(data)
-                    } }
-                    onBlur={ ( event, editor ) => {
-                    } }
-                    onFocus={ ( event, editor ) => {
-                    } }
+                  className='about'
+                  editor={ClassicEditor}
+                  data={content}
+                  onReady={editor => {
+                    // You can store the "editor" and use when it is needed.
+                  }}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    setContent(data)
+                  }}
+                  onBlur={(event, editor) => {
+                  }}
+                  onFocus={(event, editor) => {
+                  }}
                 />
                 <p>The Content on the thumb</p>
               </div>
@@ -243,10 +289,13 @@ const Update = () => {
                     {cate}
                   </p>
                   <span to='/' className='first-title'>
-                    {title}
+                    {name}
                   </span>
-                  <p className='first-desc'>
-                    {desc}
+                  <p color='black'>
+                    {minPrice}
+                  </p>
+                  <p color='black'>
+                    {quickPrice}
                   </p>
                 </div>
               </div>

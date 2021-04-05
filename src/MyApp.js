@@ -17,6 +17,7 @@ import Product from './pages/product'
 import SignIn from './pages/sign/sign-in'
 import SignUp from './pages/sign/sign-up'
 import Create from './pages/create'
+import Update from './pages/update'
 import Home from './pages/home'
 import Loading from './components/Loading'
 
@@ -39,6 +40,9 @@ const MyApp = () => {
           </Route>
           <Route path='/product/create'>
             <Create />
+          </Route>
+          <Route path='/product/update/:productId'>
+            <Update />
           </Route>
           <Route path='/product'>
             <MainLayout>

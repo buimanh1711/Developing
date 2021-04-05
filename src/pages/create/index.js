@@ -8,28 +8,35 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 const defaultValue = {
   select: 'Choose',
-  title: 'Title',
-  shortDesc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Erat ut facilisis rutrum donec tristique mauris est ac nunc. Eget nec, lorem mi libero accumsan',
+  name: 'Name',
   category: 'Category',
-  source: null
+  source: null,
+  minPrice: 0,
+  quickPrice: 100
 }
 
 const Create = () => {
   const history = useHistory()
 
-  const [title, setTitle] = useState(defaultValue.title)
-  const [desc, setDesc] = useState(defaultValue.shortDesc)
+  const [name, setName] = useState(defaultValue.name)
   const [cate, setCate] = useState(defaultValue.category)
+  const [time, setTime] = useState(null)
+  const [minPrice, setMinPrice] = useState(0)
+  const [quickPrice, setQuickPrice] = useState(0)
+  const [producer,setProducer] = useState('')
   const [file, setFile] = useState('')
   const [data, getData] = useState({ name: '', path: '/images/default_img.jpg' })
   const [categories, setCategories] = useState([])
   const [select, setSelect] = useState(false)
   const [content, setContent] = useState('')
-  const titleEl = useRef(null)
+
+  const nameEl = useRef(null)
   const cateEl = useRef(null)
-  const shortDescEl = useRef(null)
+  const minPriceEl = useRef(null)
+  const quickPriceEl = useRef(null)
+  const producerEl = useRef(null)
   const newCateEl = useRef(null)
-  const sourceEl = useRef(null)
+  const timeEl = useRef(null)
 
   // useEffect(() => {
   //   api('GET', '/api/auth')
@@ -68,21 +75,22 @@ const Create = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const formData = new FormData()
-    const currentTitle = titleEl.current.value
-    const currentShortDesc = shortDescEl.current.value
-    const currentcontent = content
+    
+    const currentName = nameEl.current.value
+    const currentContent = content
     const cateObj = cateEl.current.value
-    const currentSource = sourceEl.current.value.length > 0 && sourceEl.current.value || null
     const newCate = newCateEl.current.value.length > 0 && newCateEl.current.value || null
-    const slug = toSlug(currentTitle)
+    const slug = toSlug(currentName)
     const currentCate = cateObj !== defaultValue.select && JSON.parse(cateObj)
-
-    formData.append('title', currentTitle)
-    formData.append('shortDesc', currentShortDesc)
-    formData.append('content', currentcontent)
-    formData.append('source', currentSource)
+    
+    formData.append('name', currentName)
+    formData.append('content', currentContent)
     currentCate && formData.append('categoryId', currentCate._id)
     formData.append('image', file)
+    formData.append('time', timeEl.current.value)
+    formData.append('minPrice', minPriceEl.current.value)
+    formData.append('quickPrice', quickPriceEl.current.value)
+    formData.append('producer', producerEl.current.value)
     formData.append('slug', slug)
     newCate && formData.append('newCate', newCate)
 
@@ -96,15 +104,36 @@ const Create = () => {
         }
       })
       .catch(err => console.log('this is err: ', err))
-      
+
   }
 
-  const changeTitle = (e) => {
+  const changeName = (e) => {
     let value = e.target.value
     if (value === '') {
-      value = defaultValue.title
+      value = defaultValue.name
     }
-    setTitle(value)
+    setName(value)
+  }
+
+  const changeMinPrice = (e) => {
+    let value = e.target.value
+    setMinPrice(value)
+  }
+
+  const changeQuickPrice = (e) => {
+    let value = e.target.value
+    setQuickPrice(value)
+  }
+
+  const changeProducer = (e) => {
+    let value = e.target.value
+    value.trim()
+    setProducer(value)
+  }
+
+  const changeTime = (e) => {
+    let value = e.target.value
+    setTime(value)
   }
 
   const createNewCate = (e) => {
@@ -134,14 +163,6 @@ const Create = () => {
     setCate(value.name)
   }
 
-  const changeDesc = (e) => {
-    let value = e.target.value
-    if (value === '') {
-      value = defaultValue.shortDesc
-    }
-    setDesc(value)
-  }
-
   return (
     <div className='create-post'>
       <div className='create-container'>
@@ -153,12 +174,12 @@ const Create = () => {
           <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
             <div className='create-form'>
               <div className='create-title'>
-                <label htmlFor='create_title'>Title</label>
-                <input ref={titleEl} onChange={(e) => { changeTitle(e) }} placeholder='ex: How to create React app' id='create_title' />
-                <p>The title of the post, max 128 charecters</p>
+                <label htmlFor='create_title'>Tên</label>
+                <input ref={nameEl} onChange={(e) => { changeName(e) }} placeholder='ex: How to create React app' id='create_title' />
+                <p>Tên sản phẩm</p>
               </div>
               <div className='create-category'>
-                <label htmlFor='crate-cate-select'>Category:</label>
+                <label htmlFor='crate-cate-select'>Thể loại:</label>
                 <select required={!select} disabled={select} onChange={(e) => changeCate(e)} id='create-cate-select' ref={cateEl} name="categories" id="categories">
                   <option defaultValue="" selected disabled hidden>{defaultValue.select}</option>
                   {
@@ -172,69 +193,84 @@ const Create = () => {
                     <option defaultValue="" disabled>Thêm mới</option>
                   }
                 </select>
-                <label style={{ marginLeft: 20 }} htmlFor='create-cate-create'>Create New</label>
+                <label style={{ marginLeft: 20 }} htmlFor='create-cate-create'>Thêm mới</label>
                 <input required={!select} ref={newCateEl} onChange={createNewCate} id='create-cate-create' />
               </div>
-              <div className='create-img'>
-                <label htmlFor='create_image'>Thumbnail image</label>
-                <input onChange={handleChange} type='file' id='create_image' />
-                <p>The main image of the post</p>
+              <div className='create-producer'>
+                <label htmlFor='create_producer'>Nhãn hiệu</label>
+                <input onChange={changeProducer} ref={producerEl} id='create_producer' />
+                <p>Tên hãng, nhà sản xuất</p>
               </div>
-              <div className='create-shortdesc'>
-                <label htmlFor='create_shortdesc'>Short description</label>
-                <textarea ref={shortDescEl} onChange={(e) => { changeDesc(e) }} id='create_shortdesc' />
-                <p>The short description on the thumb, , max 512 charecters </p>
+              <div className='create-price'>
+                <label htmlFor='create_price'>Giá sàn</label>
+                <input onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
+                <p>Mức giá tối thiểu của sản phẩm</p>
               </div>
-              <div className='create-source'>
-                <label htmlFor='create_source'>Source</label>
-                <textarea ref={sourceEl} id='create_source' placeholder='if you share from another source' />
+              <div className='create-price'>
+                <label htmlFor='create_price'>Giá trần</label>
+                <input onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
+                <p>Mức giá mua luôn của sản phẩm</p>
               </div>
-              <div className='create-content'>
-                <label htmlFor='create_content'>Content</label>
-                <CKEditor
-                className='about'
-                    editor={ ClassicEditor }
-                    data="<p>Type and edit your the content!</p>"
-                    onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                    } }
-                    onChange={ ( event, editor ) => {
-                        const data = editor.getData();
-                        setContent(data)
-                    } }
-                    onBlur={ ( event, editor ) => {
-                    } }
-                    onFocus={ ( event, editor ) => {
-                    } }
-                />
-                <p>The Content on the thumb</p>
-              </div>
-              <button onClick={handleSubmit}>Post</button>
+              <div className='create-time'>
+                <label htmlFor='create_price'>Thời gian</label>
+              <input onChange={changeTime} ref={timeEl} type='date' id='create_price' />
+              <p>Thời gian hết hạn đấu giá</p>
             </div>
+            
+            <div className='create-img'>
+              <label htmlFor='create_image'>Ảnh</label>
+              <input onChange={handleChange} type='file' id='create_image' />
+              <p>Ảnh sản phâm</p>
+            </div>
+            <div className='create-content'>
+              <label htmlFor='create_content'>Mô tả</label>
+              <CKEditor
+                className='about'
+                editor={ClassicEditor}
+                data="<p>Type and edit your the content!</p>"
+                onReady={editor => {
+                  // You can store the "editor" and use when it is needed.
+                }}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setContent(data)
+                }}
+                onBlur={(event, editor) => {
+                }}
+                onFocus={(event, editor) => {
+                }}
+              />
+              <p>The Content on the thumb</p>
+            </div>
+            <button onClick={handleSubmit}>Post</button>
           </div>
-          <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4'>
-            <div className='create-demo'>
-              <div className='first-container'>
-                <div className='first-thumb'>
-                  <img onError="../images/default_img.jpg" src={`${data.path}`} alt='img' />
-                </div>
-                <div className='first-infor'>
-                  <p to='/' className='first-category'>
-                    {cate}
-                  </p>
-                  <span to='/' className='first-title'>
-                    {title}
-                  </span>
-                  <p className='first-desc'>
-                    {desc}
-                  </p>
-                </div>
+        </div>
+        <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4'>
+          <div className='create-demo'>
+            <div className='first-container'>
+              <div className='first-thumb'>
+                <img onError="../images/default_img.jpg" src={`${data.path}`} alt='img' />
+              </div>
+              <div className='first-infor'>
+                <p to='/' className='first-category'>
+                  {cate}
+                </p>
+                <span to='/' className='first-title'>
+                  {name}
+                </span>
+                <p color='black'>
+                  {minPrice}
+                </p>
+                <p color='black'>
+                  {quickPrice}
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    </div >
   )
 }
 
