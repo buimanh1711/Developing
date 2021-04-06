@@ -1,24 +1,46 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Breadcrumb from '../../components/Breadcrumb'
 import { useState, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
 import getImage from '../../utils/getImage'
+import date from '../../utils/getDate'
 import { DataContext } from '../../store/index'
 import { toggleLoading } from '../../store/actions'
-import { set } from 'js-cookie'
+import getUserInfo from '../../utils/getUserInfo'
 
 const Product = () => {
   const { state, dispatch } = useContext(DataContext)
+  const { slug } = useParams()
 
+  const [price, setPrice] = useState(null)
+  const [minPrice, setMinPrice] = useState(null)
   const [product, setProduct] = useState({})
+  const [playingList, setPlayingList] = useState([])
+
   useEffect(() => {
+    state.socket.on('receive auction', (data) => {
+      console.log(playingList)
+      const { user } = data
+      const newPlayingList = [
+        {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          price: data.price,
+          time: Date.now()
+        },
+        ...data.currentList
+      ]
+      setMinPrice(data.price)
+      setPlayingList(newPlayingList)
+    })
+
     dispatch(toggleLoading(true))
-    api('GET', 'api/products/test')
+    api('GET', `api/products/${slug}`)
       .then(res => {
-        console.log(res)
         if (res.data && res.data.status) {
-          console.log(res.data.product)
           setProduct(res.data.product)
+          setPlayingList(res.data.product.playingList.reverse())
+          setMinPrice(res.data.product.minPrice)
         }
       })
       .catch(err => {
@@ -28,7 +50,40 @@ const Product = () => {
       .then(() => {
         dispatch(toggleLoading(false))
       })
+
   }, [])
+
+  const handleChange = (e) => {
+    let value = e.target.value
+    if (value > product.minPrice) {
+      setPrice(value)
+    }
+  }
+
+  const handleBlur = (e) => {
+    let value = e.target.value
+    if (value < product.minPrice) {
+      e.target.value = minPrice
+    }
+  }
+
+  const createAuction = () => {
+    if (price > minPrice) {
+      const { id, firstName, lastName } = getUserInfo()
+      const data = {
+        productId: product._id,
+        user: {
+          id, firstName, lastName,
+        },
+        price: price,
+        playingList,
+      }
+      state.socket.emit('create auction', data)
+    } else {
+      alert('Giá không hợp lệ!')
+    }
+
+  }
 
   return (
     <>
@@ -38,22 +93,6 @@ const Product = () => {
           <div className='detail-container'>
             <div className='show'>
               <div className='image-wrapper'>
-                <div className='image-list'>
-                  <ul>
-                    <li className='active'>
-                      <img src='/images/fake.jpg' />
-                    </li>
-                    <li>
-                      <img src='/images/fake.jpg' />
-                    </li>
-                    <li>
-                      <img src='/images/fake.jpg' />
-                    </li>
-                    <li>
-                      <img src='/images/fake.jpg' />
-                    </li>
-                  </ul>
-                </div>
                 <div className='main-image'>
                   <img src={getImage(product.image)} />
                 </div>
@@ -64,32 +103,33 @@ const Product = () => {
                 <div className='win'>
                   <div className='price'>
                     <span>Giá thầu hiện tại</span>
-                    <h6>{product.minPrice}đ</h6>
+                    <h6>{minPrice}đ</h6>
                     <div className='auction'>
                       <label htmlFor='product_auct'>Trả giá: </label>
-                      <input type='number' id='product_auct' defaultValue={product.minPrice} step={product.priceStep || 1000} min={product.minPrice}></input>
+                      <input key={minPrice} onChange={handleChange} onBlur={handleBlur} type='number' id='product_auct' defaultValue={minPrice} step={product.priceStep || 1000} min={minPrice}></input>
                       <p>Bước giá: {product.priceStep || 1000}đ</p>
+                      <button onClick={createAuction}>Xác nhận</button>
                     </div>
                     <div className='winner'>
                       {
-                        product.sole &&
+                        product.sold &&
                         <div className='won-winner'>
                           <div>
                             <span>Người thắng:</span>
                             <i className="fas fa-trophy"></i>
-                            <Link to='' className='user-name'>Bùi Văn Mạnh</Link>
+                            <Link to='' className='user-name'>{`${product.winner.firstName} ${product.winner.lastName}`}</Link>
                           </div>
                         </div>
                         ||
                         <>
                           {
-                            product.playingList && product.playingList.length > 0
+                            playingList && playingList.length > 0
                             &&
                             <div className='won-winner'>
                               <div>
                                 <span>Dẫn đầu:</span>
                                 <i className="fas fa-trophy"></i>
-                                <Link to='' className='user-name'>Bùi Văn Mạnh</Link>
+                                <Link to='' className='user-name'>{`${playingList[0].firstName} ${playingList[0].lastName}`}</Link>
                               </div>
                             </div>
                           }
@@ -110,8 +150,8 @@ const Product = () => {
             </div>
             <div className='detail-info'>
               {
-                product.playingList && product.playingList.length > 0 &&
-                <div className='player-list'>
+                playingList && playingList.length > 0 &&
+                <div className='player-list scroll'>
                   <ul>
                     <li className='title'>
                       <div className='row'>
@@ -125,12 +165,12 @@ const Product = () => {
                             Giá
                         </span>
                         </div>
-                        <div className='player-quantity col-2'>
+                        <div className='player-quantity col-1'>
                           <span>
                             Số lượng
                         </span>
                         </div>
-                        <div className='player-time col-2'>
+                        <div className='player-time col-3'>
                           <span>
                             Thời gian
                         </span>
@@ -138,28 +178,28 @@ const Product = () => {
                       </div>
                     </li>
                     {
-                      product.playingList.map(item =>
+                      playingList.map(item =>
                         <li>
                           <div className='row'>
                             <div className='player-name col-6'>
                               <Link to=''>
-                                Thắng Vương
-                            </Link>
+                                {`${item.firstName} ${item.lastName}`}
+                              </Link>
                             </div>
                             <div className='player-price col-2'>
                               <span>
-                                101000
-                            </span>
+                                {item.price}
+                              </span>
                             </div>
-                            <div className='player-quantity col-2'>
+                            <div className='player-quantity col-1'>
                               <span>
                                 1
                             </span>
                             </div>
-                            <div className='player-time col-2'>
+                            <div className='player-time col-3'>
                               <span>
-                                17/11/2021
-                            </span>
+                                {date(item.time)}
+                              </span>
                             </div>
                           </div>
                         </li>

@@ -20,6 +20,7 @@ const Update = () => {
   const [cate, setCate] = useState(defaultValue.category)
   const [minPrice, setMinPrice] = useState(defaultValue.minPrice)
   const [quickPrice, setQuickPrice] = useState(defaultValue.quickPrice)
+  const [priceStep, setPriceStep] = useState(1000)
   const [file, setFile] = useState('')
   const [data, getData] = useState({ name: '', path: '/images/default_img.jpg' })
   const [categories, setCategories] = useState([])
@@ -32,6 +33,7 @@ const Update = () => {
   const cateEl = useRef(null)
   const minPriceEl = useRef(null)
   const quickPriceEl = useRef(null)
+  const priceStepEl = useRef(null)
   const producerEl = useRef(null)
   const newCateEl = useRef(null)
   const timeEl = useRef(null)
@@ -59,7 +61,7 @@ const Update = () => {
 
     api('GET', `api/products/update/${productId}`)
       .then(res => {
-        if(res.data && res.data.status) {
+        if (res.data && res.data.status) {
           console.log(res.data)
           setOriginData(res.data.product)
           setContent(res.data.product.content)
@@ -112,6 +114,7 @@ const Update = () => {
     formData.append('time', timeEl.current.value)
     formData.append('minPrice', minPriceEl.current.value)
     formData.append('quickPrice', quickPriceEl.current.value)
+    formData.append('priceStep', priceStepEl.current.value)
     formData.append('producer', producerEl.current.value)
     formData.append('oldFile', originData.image)
     formData.append('seller', originData.seller && originData.seller._id)
@@ -152,6 +155,14 @@ const Update = () => {
       value = originData.quickPrice
     }
     setQuickPrice(value)
+  }
+
+  const changePriceStep = (e) => {
+    let value = e.target.value
+    if (value === '') {
+      value = originData.priceStep
+    }
+    setPriceStep(value)
   }
 
   const changeProducer = (e) => {
@@ -197,105 +208,112 @@ const Update = () => {
 
   return (
     <div className='create-post'>
-      <div className='create-container'>
-        <Link className='back-to-home' to='/'>
-          <i className="fas fa-arrow-left"></i>
-        </Link>
-        <h1> Update your your post</h1>
-        <div className='row'>
-          <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
-            <div className='create-form'>
-              <div className='create-title'>
-                <label htmlFor='create_title'>Tên</label>
-                <input ref={nameEl} defaultValue={name} onChange={(e) => { changeName(e) }} placeholder='ex: How to create React app' id='create_title' />
-                <p>Tên sản phẩm</p>
-              </div>
-              <div className='create-category'>
-                <label htmlFor='crate-cate-select'>Thể loại:</label>
-                <select disabled={select} onChange={(e) => changeCate(e)} id='create-cate-select' ref={cateEl} name="categories" id="categories">
-                  {
-                    categories && categories.length > 0 &&
-                    categories.map(item =>
-                      <option key={item.id} selected={item.id === (originData.category && originData.category._id)} value={JSON.stringify(item)}>
-                        {item.name}
-                      </option>
-                    )
-                    ||
-                    <option defaultValue="" disabled>Thêm mới</option>
-                  }
-                </select>
-                <label style={{ marginLeft: 20 }} htmlFor='create-cate-create'>Create New</label>
-                <input ref={newCateEl} onChange={createNewCate} id='create-cate-create' />
-              </div>
-              <div className='create-producer'>
-                <label htmlFor='create_producer'>Nhãn hiệu</label>
-                <input defaultValue={originData.producer} onChange={changeProducer} ref={producerEl} id='create_producer' />
-                <p>Tên hãng, nhà sản xuất</p>
-              </div>
-              <div className='create-price'>
-                <label htmlFor='create_price'>Giá sàn</label>
-                <input defaultValue={originData.minPrice} onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
-                <p>Mức giá tối thiểu của sản phẩm</p>
-              </div>
-              <div className='create-price'>
-                <label htmlFor='create_price'>Giá trần</label>
-                <input defaultValue={originData.quickPrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
-                <p>Mức giá mua luôn của sản phẩm</p>
-              </div>
-              <div className='create-time'>
-                <label htmlFor='create_price'>Thời gian</label>
-                <input defaultValue={originData.time} onChange={changeTime} ref={timeEl} type='date' id='create_price' />
-                <p>Thời gian hết hạn đấu giá</p>
-              </div>
-
-              <div className='create-img'>
-                <label htmlFor='create_image'>Thumbnail image</label>
-                <input onChange={handleChange} type='file' id='create_image' />
-                <p>The main image of the post</p>
-              </div>
-
-              <div className='create-content'>
-                <label htmlFor='create_content'>Content</label>
-                <CKEditor
-                  className='about'
-                  editor={ClassicEditor}
-                  data={content}
-                  onReady={editor => {
-                    // You can store the "editor" and use when it is needed.
-                  }}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    setContent(data)
-                  }}
-                  onBlur={(event, editor) => {
-                  }}
-                  onFocus={(event, editor) => {
-                  }}
-                />
-                <p>The Content on the thumb</p>
-              </div>
-              <button onClick={handleSubmit}>Update</button>
-            </div>
-          </div>
-          <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4'>
-            <div className='create-demo'>
-              <div className='first-container'>
-                <div className='first-thumb'>
-                  <img onerror="../images/test/item.jpeg" src={data.path} alt='img' />
+      <div className='container'>
+        <div className='create-container'>
+          <Link className='back-to-home' to='/'>
+            <i className="fas fa-arrow-left"></i>
+          </Link>
+          <h1> Update your your post</h1>
+          <div className='row'>
+            <div className='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8'>
+              <div className='create-form'>
+                <div className='create-title'>
+                  <label htmlFor='create_title'>Tên</label>
+                  <input ref={nameEl} defaultValue={name} onChange={(e) => { changeName(e) }} placeholder='ex: How to create React app' id='create_title' />
+                  <p>Tên sản phẩm</p>
                 </div>
-                <div className='first-infor'>
-                  <p to='/' className='first-category'>
-                    {cate}
-                  </p>
-                  <span to='/' className='first-title'>
-                    {name}
-                  </span>
-                  <p color='black'>
-                    {minPrice}
-                  </p>
-                  <p color='black'>
-                    {quickPrice}
-                  </p>
+                <div className='create-category'>
+                  <label htmlFor='crate-cate-select'>Thể loại:</label>
+                  <select disabled={select} onChange={(e) => changeCate(e)} id='create-cate-select' ref={cateEl} name="categories" id="categories">
+                    {
+                      categories && categories.length > 0 &&
+                      categories.map(item =>
+                        <option key={item.id} selected={item.id === (originData.category && originData.category._id)} value={JSON.stringify(item)}>
+                          {item.name}
+                        </option>
+                      )
+                      ||
+                      <option defaultValue="" disabled>Thêm mới</option>
+                    }
+                  </select>
+                  <label style={{ marginLeft: 20 }} htmlFor='create-cate-create'>Create New</label>
+                  <input ref={newCateEl} onChange={createNewCate} id='create-cate-create' />
+                </div>
+                <div className='create-producer'>
+                  <label htmlFor='create_producer'>Nhãn hiệu</label>
+                  <input defaultValue={originData.producer} onChange={changeProducer} ref={producerEl} id='create_producer' />
+                  <p>Tên hãng, nhà sản xuất</p>
+                </div>
+                <div className='create-price'>
+                  <label htmlFor='create_price'>Giá sàn</label>
+                  <input defaultValue={originData.minPrice} onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
+                  <p>Mức giá tối thiểu của sản phẩm</p>
+                </div>
+                <div className='create-price'>
+                  <label htmlFor='create_price'>Bước giá</label>
+                  <input ref={priceStepEl} onChange={changePriceStep} defaultValue={originData.priceStep} type='number' id='create_price' />
+                  <p>Bước giá mỗi lần đấu giá</p>
+                </div>
+                <div className='create-price'>
+                  <label htmlFor='create_price'>Giá trần</label>
+                  <input defaultValue={originData.quickPrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
+                  <p>Mức giá mua luôn của sản phẩm</p>
+                </div>
+                <div className='create-time'>
+                  <label htmlFor='create_price'>Thời gian</label>
+                  <input defaultValue={originData.time} onChange={changeTime} ref={timeEl} type='date' id='create_price' />
+                  <p>Thời gian hết hạn đấu giá</p>
+                </div>
+
+                <div className='create-img'>
+                  <label htmlFor='create_image'>Thumbnail image</label>
+                  <input onChange={handleChange} type='file' id='create_image' />
+                  <p>The main image of the post</p>
+                </div>
+
+                <div className='create-content'>
+                  <label htmlFor='create_content'>Content</label>
+                  <CKEditor
+                    className='about'
+                    editor={ClassicEditor}
+                    data={content}
+                    onReady={editor => {
+                      // You can store the "editor" and use when it is needed.
+                    }}
+                    onChange={(event, editor) => {
+                      const data = editor.getData();
+                      setContent(data)
+                    }}
+                    onBlur={(event, editor) => {
+                    }}
+                    onFocus={(event, editor) => {
+                    }}
+                  />
+                  <p>The Content on the thumb</p>
+                </div>
+                <button onClick={handleSubmit}>Update</button>
+              </div>
+            </div>
+            <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4'>
+              <div className='create-demo'>
+                <div className='first-container'>
+                  <div className='first-thumb'>
+                    <img onerror="../images/test/item.jpeg" src={data.path} alt='img' />
+                  </div>
+                  <div className='first-infor'>
+                    <p to='/' className='first-category'>
+                      {cate}
+                    </p>
+                    <span to='/' className='first-title'>
+                      {name}
+                    </span>
+                    <p color='black'>
+                      {minPrice}
+                    </p>
+                    <p color='black'>
+                      {quickPrice}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

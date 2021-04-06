@@ -22,7 +22,7 @@ export const DataProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken')
+    const token = localStorage.getItem('userToken')
     if (token) {
       api('GET', '/auth')
         .then(res => {

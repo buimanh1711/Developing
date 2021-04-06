@@ -1,10 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store'
-import { io } from 'socket.io-client'
 import Notify from '../components/Notify'
-
-const socket = io('localhost:3999')
 
 const Header = () => {
   const { state, dispatch } = useContext(DataContext)

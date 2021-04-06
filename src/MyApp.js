@@ -24,17 +24,18 @@ import Loading from './components/Loading'
 
 const MyApp = () => {
   const { state, dispatch } = useContext(DataContext)
+
   useEffect(() => {
     dispatch(getUser())
-    console.log(state)
+
   }, [])
 
   return (
     <>
-    {
-      state.loading &&
-      <Loading />
-    }
+      {
+        state.loading &&
+        <Loading />
+      }
       <Router>
         <Switch>
           <Route path='/login'>
@@ -49,7 +50,7 @@ const MyApp = () => {
           <Route path='/products/update/:productId'>
             <Update />
           </Route>
-          <Route path='/products'>
+          <Route path='/products/:slug'>
             <MainLayout>
               <Product />
             </MainLayout>

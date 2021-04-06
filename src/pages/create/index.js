@@ -35,6 +35,7 @@ const Create = () => {
   const cateEl = useRef(null)
   const minPriceEl = useRef(null)
   const quickPriceEl = useRef(null)
+  const priceStepEl = useRef(null)
   const producerEl = useRef(null)
   const newCateEl = useRef(null)
   const timeEl = useRef(null)
@@ -92,6 +93,7 @@ const Create = () => {
     formData.append('time', timeEl.current.value)
     formData.append('minPrice', minPriceEl.current.value)
     formData.append('quickPrice', quickPriceEl.current.value)
+    formData.append('priceStep', priceStepEl.current.value || 1000)
     formData.append('producer', producerEl.current.value)
     formData.append('slug', slug)
     newCate && formData.append('newCate', newCate)
@@ -208,6 +210,11 @@ const Create = () => {
                   <label htmlFor='create_price'>Giá sàn</label>
                   <input onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
                   <p>Mức giá tối thiểu của sản phẩm</p>
+                </div>
+                <div className='create-price'>
+                  <label htmlFor='create_price'>Bước giá</label>
+                  <input ref={priceStepEl} type='number' id='create_price' />
+                  <p>Bước giá mỗi lần đấu giá</p>
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Giá trần</label>
