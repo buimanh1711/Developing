@@ -173,7 +173,7 @@ const Create = () => {
             <i className="fas fa-arrow-left"></i>
           </Link>
           <h1> Create your own post</h1>
-          <div className='row'>
+          <div className='row' style={{justifyContent: 'center'}}>
             <div className='col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
               <div className='create-form'>
                 <div className='create-title'>

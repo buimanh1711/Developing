@@ -1,12 +1,28 @@
 import { Link } from 'react-router-dom'
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store'
+import { io } from 'socket.io-client'
+import Notify from '../components/Notify'
+
+const socket = io('localhost:3999')
 
 const Header = () => {
   const { state, dispatch } = useContext(DataContext)
 
   const [childMenu, setChildMenu] = useState(false)
   const [mbMenu, setMbMenu] = useState(false)
+  const [notify, setNotify] = useState(false)
+
+  useEffect(() => {
+    state.socket.on('receiveMessage', data => {
+      console.log(data)
+    })
+  }, [])
+
+  const sendMessage = (message) => {
+    state.socket.emit('sendMessage', message)
+  }
+
   return (
     <>
       <div id='header'>
@@ -33,48 +49,60 @@ const Header = () => {
                 </Link>
                 {
                   state.login &&
-                  <button onClick={() => setChildMenu(!childMenu)}>
-                    <i className="fas fa-user"></i>
-                    <span>
-                      {`${state.user && state.user.firstName} ${state.user && state.user.lastName}`}
-                    </span>
-                    {
-                      childMenu &&
-                      <i className="fas fa-sort-up"></i>
-                      ||
-                      <i className="fas fa-caret-down"></i>
-                    }
-                    <div className='child-menu' hidden={!childMenu}>
-                      <div className='child-menu-container'>
-                        <ul>
-                          <li>
-                            <Link to=''>
-                              <i className="fas fa-user"></i>
-                              <span>
-                                Cá nhân
-                            </span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to=''>
-                              <i className="fas fa-map-marker-alt"></i>
-                              <span>
-                                Địa chỉ
-                            </span>
-                            </Link>
-                          </li>
-                          <li>
-                            <Link to='/login'>
-                              <i className="fas fa-sign-out-alt"></i>
-                              <span>
-                                Đăng xuất
-                            </span>
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
+                  <>
+                    <div className='header-notify'>
+                      <button onClick={() => setNotify(!notify)} className='notify-btn'>
+                        <i className="fas fa-bell"></i>
+                        <span>5</span>
+                      </button>
+                      {
+                        notify &&
+                        <Notify />
+                      }
                     </div>
-                  </button>
+                    <button onClick={() => setChildMenu(!childMenu)}>
+                      <i className="fas fa-user"></i>
+                      <span>
+                        {`${state.user && state.user.firstName} ${state.user && state.user.lastName}`}
+                      </span>
+                      {
+                        childMenu &&
+                        <i className="fas fa-sort-up"></i>
+                        ||
+                        <i className="fas fa-caret-down"></i>
+                      }
+                      <div className='child-menu' hidden={!childMenu}>
+                        <div className='child-menu-container'>
+                          <ul>
+                            <li>
+                              <Link to=''>
+                                <i className="fas fa-user"></i>
+                                <span>
+                                  Cá nhân
+                            </span>
+                              </Link>
+                            </li>
+                            <li>
+                              <Link to=''>
+                                <i className="fas fa-map-marker-alt"></i>
+                                <span>
+                                  Địa chỉ
+                            </span>
+                              </Link>
+                            </li>
+                            <li>
+                              <Link to='/login'>
+                                <i className="fas fa-sign-out-alt"></i>
+                                <span>
+                                  Đăng xuất
+                            </span>
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </button>
+                  </>
                   ||
                   <div className='sign-container'>
                     <Link to='/login' className='login-btn'>Đăng nhập</Link>

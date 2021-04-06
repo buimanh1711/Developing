@@ -1,11 +1,14 @@
 import { createContext, useReducer, useEffect } from 'react'
 import reducer from './reducer'
 import api from '../utils/axios'
+import { io } from 'socket.io-client'
+const socket = io('localhost:3999')
 
 export const DataContext = createContext()
 
 export const DataProvider = (props) => {
   const initialState = {
+    socket,
     notif: {
       active: false,
       content: ''

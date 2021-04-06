@@ -1,7 +1,6 @@
 #header {
   background: rgb(24, 23, 23);
-  border-bottom: 1px solid rgba(83, 79, 79, 0.171);;
-
+  border-bottom: 1px solid rgba(83, 79, 79, 0.171);
 }
 
 #desktop {
@@ -23,7 +22,7 @@
       align-items: center;
 
       a {
-        margin: auto 8px;
+        margin: auto 16px;
         color: white;
         text-decoration: none;
         span {
@@ -62,9 +61,9 @@
 
           li:hover {
             background: rgba(89, 136, 180, 0.116);
-            transition: ease .5s
+            transition: ease 0.5s;
           }
-          
+
           a {
             color: rgb(99, 92, 133) !important;
           }
@@ -92,7 +91,7 @@
       button {
         background: none;
         font-size: 1.6rem;
-        color: rgb(24, 23, 23)
+        color: rgb(24, 23, 23);
       }
     }
   }
@@ -109,7 +108,7 @@
 
   .menu-container {
     padding-top: 27px;
-    transition: ease .5s;
+    transition: ease 0.5s;
     position: fixed;
     right: 0;
     top: 0;
@@ -132,6 +131,100 @@
           margin-left: 8px;
         }
       }
+    }
+  }
+}
+
+.notification {
+  position: absolute;
+  width: 400px;
+  background: white;
+  z-index: 1;
+  border: 1px solid rgba(138, 129, 129, 0.247);
+  border-radius: 10px;
+  top: 34px;
+  right: -182px;
+}
+
+.notification::before {
+  content: "";
+  position: absolute;
+  border: 10px solid transparent;
+  border-bottom-color: white;
+  top: -20px;
+  right: 196px;
+}
+
+.notif-container {
+  padding: 20px 0px;
+}
+
+.notif-container ul {
+  padding: 0;
+  margin: 0;
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.notif-container ul li {
+  list-style-type: none;
+  font-family: fontLight;
+  font-size: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(104, 100, 100, 0.24);
+  padding: 16px 12px;
+}
+
+.notif-container ul li:hover {
+  background: rgba(189, 185, 185, 0.123);
+  transition: ease 0.1s;
+}
+
+.notif-container ul li a {
+  color: black !important;
+  margin: 0 !important;
+}
+
+.notif-container ul::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.082);
+  border-radius: 10px;
+}
+
+.notif-container ul::-webkit-scrollbar-corner {
+  background-color: rgba(0, 0, 0, 0.082) !important;
+}
+
+.notif-container ul::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 10px;
+  height: 5px;
+}
+
+.notif-container ul::-webkit-scrollbar-track {
+  background-color: #0000000c !important;
+  border-radius: 10px;
+}
+
+.header-notify {
+  position: relative;
+  .notify-btn {
+    position: relative;
+    margin: 0px 12px;
+
+    span {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: .6rem;
+      border-radius: 50%;
+      top: -6px;
+      right: -8px;
     }
   }
 }
