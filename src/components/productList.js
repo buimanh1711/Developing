@@ -1,33 +1,32 @@
 import { Link } from 'react-router-dom'
 
-const ProductList = (props) => {
-  const { products } = props
-
+const ProductList = () => {
+  const arr = [1, 2, 2, 2, 1, 1]
+  console.log(arr)
   return (
-    <div id='product-list'>
+    <div id='productLis'>
       <div className='container'>
         <div className='productList-container'>
           <div className='row'>
             {
-              products && products.length > 0 && products.map(item => (
+              arr && arr.length > 0 && arr.map(item => (
                 <div className='col col-sm-12 col-md-6 col-lg-3 col-xl-3'>
                   <div className='item'>
                     <div className='item-container'>
                       <div className='thumb'>
-                        <Link to={`/products/${item.slug || ''}`}>
-                          <img src='/images/fake.jpg' alt='' />
+                        <Link to='/products/slug'>
+                          <img src='' alt='' />
                         </Link>
                       </div>
                       <div className='info'>
-                        <Link to={`/products/${item.slug || ''}`}>{item.name}</Link>
-                        <i className='producer'>#{item.category && item.category.name || 'Đang cập nhật...'}</i>
-                        <p>{item.producer || 'Đang cập nhật...'}</p>
+                        <h1>Name</h1>
+                        <p>Category</p>
                         <div className='auct-info'>
-                          <span>00:00:00</span>
+                          <span>12:11:11</span>
                           <div className='min-price'>
                             <Link to='/products/slug'>
                               <i className="fas fa-gavel"></i>
-                              <span>{item.minPrice || 0}đ</span>
+                              <span>200000đ</span>
                             </Link>
                           </div>
                         </div>

@@ -170,7 +170,7 @@ const Product = () => {
                             Số lượng
                         </span>
                         </div>
-                        <div className='player-time col-3'>
+                        <div style={{fontSize: '1rem'}} className='player-time col-3'>
                           <span>
                             Thời gian
                         </span>
