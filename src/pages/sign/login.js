@@ -86,7 +86,7 @@ const SignIn = (props) => {
             localStorage.setItem('lastName', user.lastName)
             localStorage.setItem('phone', user.phone)
             localStorage.setItem('role', user.role)
-            Cookies.set('userToken', res.data.token)
+            Cookies.set('userToken', res.data.token, { expires: 7 })
             dispatch(toggleLoading(false))
             dispatch(getUser())
             console.log(state)

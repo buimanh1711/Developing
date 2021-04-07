@@ -45,7 +45,7 @@ const Update = () => {
       .then(res => {
         if (res.data && !res.data.status) {
           setTimeout(() => {
-            history.replace({ pathname: '/sign-in' })
+            history.replace({ pathname: '/login' })
           }, 1000)
         }
       })

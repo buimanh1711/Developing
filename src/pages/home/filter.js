@@ -173,8 +173,8 @@ const FilterSelector = (props) => {
                   </div>
                 )
               }
-              <div className='tag' onClick={filterAll}>
-                <span style={{ color: 'rgb(238, 63, 63)', cursor: 'pointer' }}>
+              <div style={{background: '#f74949af'}} className='tag' onClick={filterAll}>
+                <span style={{ cursor: 'pointer' }}>
                   Remove all filter
                 </span>
               </div>

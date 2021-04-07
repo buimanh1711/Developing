@@ -12,13 +12,16 @@ import './static/css/sign.scss'
 import './static/css/home.scss'
 import './static/css/create.scss'
 import './static/css/main.scss'
+import './static/css/admin.scss'
 import './static/css/responsive.scss'
 
 import Product from './pages/product'
-import SignIn from './pages/sign/sign-in'
-import SignUp from './pages/sign/sign-up'
+import SignIn from './pages/sign/login'
+import SignUp from './pages/sign/register'
 import Create from './pages/create'
 import Update from './pages/update'
+import ProductManager from './pages/admin/ProductManaging'
+import UserManager from './pages/admin/UserManaging.js'
 import Home from './pages/home'
 import Loading from './components/Loading'
 
@@ -27,7 +30,6 @@ const MyApp = () => {
 
   useEffect(() => {
     dispatch(getUser())
-
   }, [])
 
   return (
@@ -53,6 +55,16 @@ const MyApp = () => {
           <Route path='/products/:slug'>
             <MainLayout>
               <Product />
+            </MainLayout>
+          </Route>
+          <Route path='/admin/products'>
+            <MainLayout>
+              <ProductManager />
+            </MainLayout>
+          </Route>
+          <Route path='/admin/users'>
+            <MainLayout>
+              <UserManager />
             </MainLayout>
           </Route>
           <Route path='/'>

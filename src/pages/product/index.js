@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import Breadcrumb from '../../components/Breadcrumb'
+import DetailCounter from '../../components/detailCounter'
 import { useState, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
 import getImage from '../../utils/getImage'
@@ -32,6 +33,17 @@ const Product = () => {
       ]
       setMinPrice(data.price)
       setPlayingList(newPlayingList)
+    })
+
+    state.socket.on('get product notify', data => {
+      const { userInfo, price, newProduct } = data
+      console.log(product)
+      setProduct({
+        ...newProduct,
+        sold: true,
+        winner: userInfo.id,
+        price
+      })
     })
 
     dispatch(toggleLoading(true))
@@ -85,6 +97,12 @@ const Product = () => {
 
   }
 
+  const getProduct = (product) => {
+
+    const userInfo = state.user
+    state.socket.emit('get product', { product, userInfo })
+  }
+
   return (
     <>
       <Breadcrumb />
@@ -99,29 +117,25 @@ const Product = () => {
               </div>
               <div className='main-info'>
                 <h1>{product.name}</h1>
-                <h3>{product.time}</h3>
-                <div className='win'>
-                  <div className='price'>
-                    <span>Giá thầu hiện tại</span>
-                    <h6>{minPrice}đ</h6>
-                    <div className='auction'>
-                      <label htmlFor='product_auct'>Trả giá: </label>
-                      <input key={minPrice} onChange={handleChange} onBlur={handleBlur} type='number' id='product_auct' defaultValue={minPrice} step={product.priceStep || 1000} min={minPrice}></input>
-                      <p>Bước giá: {product.priceStep || 1000}đ</p>
-                      <button onClick={createAuction}>Xác nhận</button>
-                    </div>
-                    <div className='winner'>
-                      {
-                        product.sold &&
-                        <div className='won-winner'>
-                          <div>
-                            <span>Người thắng:</span>
-                            <i className="fas fa-trophy"></i>
-                            <Link to='' className='user-name'>{`${product.winner.firstName} ${product.winner.lastName}`}</Link>
-                          </div>
+                <div className='cate-container'>
+                  <span className='category'> {product.category && product.category.name || 'Đang cập nhật'}</span>
+                  <span className='producer'> #{product.producer || 'Đang cập nhật'}</span>
+                </div>
+                {
+                  !product.sold &&
+                  <>
+                    <DetailCounter time={product.time} />
+                    <div className='win'>
+                      <div className='price'>
+                        <span>Giá thầu hiện tại</span>
+                        <h6>{minPrice}đ</h6>
+                        <div className='auction'>
+                          <label htmlFor='product_auct'>Trả giá: </label>
+                          <input key={minPrice} onChange={handleChange} onBlur={handleBlur} type='number' id='product_auct' defaultValue={minPrice} step={product.priceStep || 1000} min={minPrice}></input>
+                          <p>Bước giá: {product.priceStep || 1000}đ</p>
+                          <button onClick={createAuction}>Xác nhận</button>
                         </div>
-                        ||
-                        <>
+                        <div className='winner'>
                           {
                             playingList && playingList.length > 0
                             &&
@@ -133,83 +147,99 @@ const Product = () => {
                               </div>
                             </div>
                           }
-                        </>
-                      }
-                    </div>
-                  </div>
-                  <div className='quick-buy'>
-                    <span>Mua trực tiếp
-                  <i className="fas fa-shopping-cart"></i>
-                    </span>
-                    <h4>
-                      {product.quickPrice}đ
+
+                        </div>
+                      </div>
+                      <div className='quick-buy' onClick={() => getProduct(product)}>
+                        <span>Mua trực tiếp
+                    <i className="fas fa-shopping-cart"></i>
+                        </span>
+                        <h4>
+                          {product.quickPrice}đ
                   </h4>
-                  </div>
-                </div>
+                      </div>
+                    </div>
+                  </>
+                  ||
+                  <>
+                    <h1 className='done'>
+                      <i class="fas fa-calendar-check"></i>
+                    Đấu giá đã kết thúc.
+                  </h1>
+                    <h1 className='done'>
+                      Sản phẩm đã được bán với giá {product.price}đ
+                    </h1>
+                  </>
+                }
               </div>
             </div>
             <div className='detail-info'>
               {
-                playingList && playingList.length > 0 &&
-                <div className='player-list scroll'>
-                  <ul>
-                    <li className='title'>
-                      <div className='row'>
-                        <div className='player-name col-6'>
-                          <span>
-                            Tên
-                        </span>
-                        </div>
-                        <div className='player-price col-2'>
-                          <span>
-                            Giá
-                        </span>
-                        </div>
-                        <div className='player-quantity col-1'>
-                          <span>
-                            Số lượng
-                        </span>
-                        </div>
-                        <div style={{fontSize: '1rem'}} className='player-time col-3'>
-                          <span>
-                            Thời gian
-                        </span>
-                        </div>
-                      </div>
-                    </li>
-                    {
-                      playingList.map(item =>
-                        <li>
+                !product.sold &&
+                <div>
+                  {
+                    playingList && playingList.length > 0 &&
+                    <div className='player-list scroll'>
+                      <ul>
+                        <li className='title'>
                           <div className='row'>
                             <div className='player-name col-6'>
-                              <Link to=''>
-                                {`${item.firstName} ${item.lastName}`}
-                              </Link>
+                              <span>
+                                Tên
+                        </span>
                             </div>
                             <div className='player-price col-2'>
                               <span>
-                                {item.price}
-                              </span>
+                                Giá
+                        </span>
                             </div>
                             <div className='player-quantity col-1'>
                               <span>
-                                1
-                            </span>
+                                Số lượng
+                        </span>
                             </div>
-                            <div className='player-time col-3'>
+                            <div style={{ fontSize: '1rem' }} className='player-time col-3'>
                               <span>
-                                {date(item.time)}
-                              </span>
+                                Thời gian
+                        </span>
                             </div>
                           </div>
                         </li>
-                      )
-                    }
-                  </ul>
-                  <span className='see-more'>Xem nhiều hơn</span>
+                        {
+                          playingList.map(item =>
+                            <li>
+                              <div className='row'>
+                                <div className='player-name col-6'>
+                                  <Link to=''>
+                                    {`${item.firstName} ${item.lastName}`}
+                                  </Link>
+                                </div>
+                                <div className='player-price col-2'>
+                                  <span>
+                                    {item.price}
+                                  </span>
+                                </div>
+                                <div className='player-quantity col-1'>
+                                  <span>
+                                    1
+                            </span>
+                                </div>
+                                <div className='player-time col-3'>
+                                  <span>
+                                    {date(item.time)}
+                                  </span>
+                                </div>
+                              </div>
+                            </li>
+                          )
+                        }
+                      </ul>
+                      <span className='see-more'>Xem nhiều hơn</span>
+                    </div>
+                    ||
+                    <p className='alert alert-warning'>Chưa có người tham gia đấu giá!</p>
+                  }
                 </div>
-                ||
-                <p className='alert alert-warning'>Chưa có người tham gia đấu giá!</p>
               }
               <div className='description'>
                 <div className='detail'>
@@ -217,7 +247,7 @@ const Product = () => {
                 </div>
                 <div className='discribe'>
                   <p style={{ fontFamily: 'fontRegular', fontStyle: 'italic' }}>Mô tả sản phẩm:</p>
-                  <div dangerouslySetInnerHTML={{ __html: product.content }}>
+                  <div dangerouslySetInnerHTML={{ __html: product.content || 'Đang cập nhật...' }}>
                   </div>
                 </div>
               </div>

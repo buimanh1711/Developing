@@ -76,7 +76,7 @@ const Home = () => {
   const removeProducts = (postId) => {
     const newList = products.filter(x => x._id !== postId)
     setProducts(newList)
-}
+  }
 
   return (
     <>
@@ -86,8 +86,17 @@ const Home = () => {
             <div className='home-banner'>
               <img src='/images/fakebanner.png' />
             </div>
-            <Filter totalFilter={filter} length={products.length} total={totalProduct} />
-            <ProductList removeEl={removeProducts} setProducts={setProducts} products={products} />
+            {
+              products && products.length > 0 &&
+              <>
+                <Filter totalFilter={filter} length={products.length} total={totalProduct} />
+                <ProductList removeEl={removeProducts} setProducts={setProducts} products={products} />
+              </>
+              ||
+              <p style={{marginTop: 32}} className='alert alert-warning'>
+                Không có sản phẩm nào!
+              </p>
+            }
           </div>
         </div>
       </div>

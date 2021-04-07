@@ -1,11 +1,11 @@
 import TextareaAutosize from 'react-textarea-autosize'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
 import toSlug from '../../utils/toSlug'
 import { useHistory, Link, useLocation } from 'react-router-dom'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-
+import { DataContext } from '../../store/index'
 const defaultValue = {
   select: 'Choose',
   name: 'Product\'s name',
@@ -18,6 +18,7 @@ const defaultValue = {
 
 const Create = () => {
   const history = useHistory()
+  const { state, dispatch } = useContext(DataContext)
 
   const [name, setName] = useState(defaultValue.name)
   const [cate, setCate] = useState(defaultValue.category)
@@ -175,7 +176,7 @@ const Create = () => {
             <i className="fas fa-arrow-left"></i>
           </Link>
           <h1> Create your own post</h1>
-          <div className='row' style={{justifyContent: 'center'}}>
+          <div className='row' style={{ justifyContent: 'center' }}>
             <div className='col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
               <div className='create-form'>
                 <div className='create-title'>

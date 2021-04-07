@@ -1,60 +1,26 @@
 import { Link } from 'react-router-dom'
 
-const Notify = () => {
-
+const Notify = ({ notifyList }) => {
+  const newNotifyList = notifyList
+  console.log(newNotifyList)
   return (
     <div className='notification'>
       <div className='notif-container'>
         <div className='notif-list'>
-          <ul>
-          <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban. Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban. Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-            <li>
-              <Link to='/'>
-                Bui Van Manh da say hello ban.
-              </Link>
-            </li>
-          </ul>
+          {
+            newNotifyList && newNotifyList.length > 0 &&
+            <ul>
+              {
+                newNotifyList.map(item =>
+                  <li>
+                    <span>
+                      {item.value}
+                    </span>
+                  </li>
+                )
+              }
+            </ul>
+          }
         </div>
       </div>
     </div>

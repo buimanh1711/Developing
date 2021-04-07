@@ -1,19 +1,56 @@
 import { Link } from 'react-router-dom'
 import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store'
+import { getUser } from '../store/actions'
 import Notify from '../components/Notify'
+import api from '../utils/axios'
+import ProductManager from '../pages/admin/ProductManaging'
 
 const Header = () => {
   const { state, dispatch } = useContext(DataContext)
 
   const [childMenu, setChildMenu] = useState(false)
+  const [manageMenu, setManageMenu] = useState(false)
   const [mbMenu, setMbMenu] = useState(false)
   const [notify, setNotify] = useState(false)
+  const [notifyList, setNotifyList] = useState([])
 
   useEffect(() => {
-    state.socket.on('receiveMessage', data => {
-      console.log(data)
+    const userId = localStorage.getItem('id')
+    let tempNotifList = []
+    api('GET', 'api/users/v/notify')
+      .then(res => {
+        if (res.data && res.data.status) {
+          tempNotifList = res.data.notifyList
+          setNotifyList(res.data.notifyList)
+        }
+      })
+    state.socket.on('pass product notify', data => {
+      const { sellerId, name, err } = data
+      if (sellerId === userId) {
+        const notif = `Sản phẩm ${name} của bạn đã được quản trị viên duyệt.`
+        setNotifyList([
+          ...tempNotifList,
+          {
+            value: notif
+          }
+        ])
+      }
     })
+
+    state.socket.on('get product notify', data => {
+      const { sellerId, name, err } = data
+      if (sellerId === userId) {
+        const notif = `Sản phẩm ${name} của bạn đã được bán. Hãy liên lạc với người mua để giao dịch`
+        setNotifyList([
+          ...tempNotifList,
+          {
+            value: notif
+          }
+        ])
+      }
+    })
+
   }, [])
 
   const sendMessage = (message) => {
@@ -32,12 +69,9 @@ const Header = () => {
                 </a>
               </div>
               <div className='header-right-wrapper'>
-                <Link to=''>
-                  <i className="fas fa-gavel"></i>
-                  <span>
-                    Đấu giá của tôi
-                </span>
-                </Link>
+                <div className='search'>
+                  <i style={{ color: 'white', fontSize: '1.1rem', marginRight: 12, cursor: 'pointer' }} className="fas fa-search"></i>
+                </div>
                 <Link to='/products/create'>
                   <i className="fas fa-money-bill-wave"></i>
                   <span>
@@ -47,16 +81,19 @@ const Header = () => {
                 {
                   state.login &&
                   <>
-                    <div className='header-notify'>
-                      <button onClick={() => setNotify(!notify)} className='notify-btn'>
-                        <i className="fas fa-bell"></i>
-                        <span>5</span>
-                      </button>
-                      {
-                        notify &&
-                        <Notify />
-                      }
-                    </div>
+                    {
+                      state.user.role !== 'admin' &&
+                      <div className='header-notify'>
+                        <button onClick={() => setNotify(!notify)} className='notify-btn'>
+                          <i className="fas fa-bell"></i>
+                          <span>{notifyList.length}</span>
+                        </button>
+                        {
+                          notify &&
+                          <Notify notifyList={notifyList} />
+                        }
+                      </div>
+                    }
                     <button onClick={() => setChildMenu(!childMenu)}>
                       <i className="fas fa-user"></i>
                       <span>
@@ -106,6 +143,43 @@ const Header = () => {
                     <Link to='/register' className='login-btn'>Đăng kí</Link>
                   </div>
                 }
+                {
+                  state.login && state.user.role === 'admin' &&
+                  <button className='admin-btn' onClick={() => setManageMenu(!manageMenu)} style={{ marginLeft: 16 }}>
+                    <i style={{ marginRight: 8 }} className="fas fa-tasks"></i>
+                    <span>
+                      Quản lý
+                    </span>
+                    {
+                      manageMenu &&
+                      <i className="fas fa-sort-up"></i>
+                      ||
+                      <i className="fas fa-caret-down"></i>
+                    }
+                    <div className='child-menu' hidden={!manageMenu}>
+                      <div className='child-menu-container'>
+                        <ul>
+                          <li>
+                            <Link to='/admin/products'>
+                              <i className="fas fa-shopping-bag"></i>
+                              <span>
+                                Sản phẩm
+                            </span>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link to='/admin/users'>
+                              <i className="fas fa-users"></i>
+                              <span>
+                                Người dùng
+                            </span>
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </button>
+                }
               </div>
             </div>
           </div>
@@ -116,12 +190,7 @@ const Header = () => {
               <div className='menu-container'>
                 <ul>
                   <li>
-                    <Link to=''>
-                      <i className="fas fa-gavel"></i>
-                      <span>
-                        Đấu giá của tôi
-                      </span>
-                    </Link>
+                    <i className="fas fa-search"></i>
                   </li>
                   <li>
                     <Link to='/products/create'>
