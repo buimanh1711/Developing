@@ -17,6 +17,7 @@ const SignIn = (props) => {
 
   useEffect(() => {
     localStorage.clear()
+    Cookies.remove('userToken')
   }, [])
 
   const usernameValidation = (e) => {
@@ -91,25 +92,15 @@ const SignIn = (props) => {
             dispatch(getUser())
             console.log(state)
             history.replace({ pathname: '/' })
+          } else {
+            alert('Thông tin tài khoản không đúng, vui lòng đăng nhập lại.')
           }
-
-          // if (data.logged) {
-          //   const userInfo = data.userData
-
-            // localStorage.setItem('login', true)
-            // localStorage.setItem('firstName', userInfo.firstName)
-            // localStorage.setItem('lastName', userInfo.lastName)
-            // localStorage.setItem('id', userInfo.id)
-            // localStorage.setItem('userImage', userInfo.image)
-            // localStorage.setItem('token', userToken)
-            // localStorage.setItem('role', role)
-          // } else {
-          //   alert('Thông tin tài khoản không đúng, vui lòng đăng nhập lại.')
-          // }
-          // }
         })
         .catch(err => {
           console.log('err', err)
+        })
+        .then(() => {
+          dispatch(toggleLoading(false))
         })
     } else {
       alert('Thông tin không hợp lệ!')

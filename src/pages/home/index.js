@@ -23,7 +23,8 @@ const Home = () => {
       .then((res) => {
         if (res.status === 200) {
           if (res.data && res.data.products && res.data.products.length > 0) {
-            setProducts(res.data.products)
+            const newProducts = res.data.products.filter(x => x.passed)
+            setProducts(newProducts)
             setCurrentPage(res.data.page)
             setTotalPage(res.data.totalPage)
             setTotalProduct(res.data.totalProduct)
