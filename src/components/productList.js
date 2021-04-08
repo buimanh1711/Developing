@@ -7,7 +7,7 @@ import { DataContext } from '../store/index'
 const ProductList = (props) => {
   const { state, dispatch } = useContext(DataContext)
 
-  const { products, checkPassed, setProducts } = props
+  const { products, checkPassed, setProducts, search, isSeller, isAdmin } = props
 
   const passProduct = (item, index) => {
     const productId = item._id
@@ -64,7 +64,14 @@ const ProductList = (props) => {
                           !item.passed &&
                           <button onClick={() => passProduct(item, index)} className='pass-btn pass'>Duyệt</button>
                         }
-                        <button onClick={() => deleteProduct(item._id, item.seller)} className='pass-btn delete'>Xóa</button>
+                        {
+                          !search && (isSeller || isAdmin) &&
+                          <button onClick={() => deleteProduct(item._id, item.seller)} className='pass-btn delete'>Xóa</button>
+                        }
+                        {
+                          !search && isSeller && !isAdmin &&
+                          <Link to={`/products/update/${item._id}`} style={{width: '50%', textAlign: 'center', display: 'inline-block'}} className='pass-btn pass'>Sửa</Link>
+                        }
                       </div>
                       <div className='item'>
                         <div className='item-container'>
@@ -93,7 +100,7 @@ const ProductList = (props) => {
                   )
               })
               ||
-              <p style={{width: '100%'}} className='alert alert-warning'>
+              <p style={{ width: '100%' }} className='alert alert-warning'>
                 Không có sản phẩm nào!
               </p>
             }

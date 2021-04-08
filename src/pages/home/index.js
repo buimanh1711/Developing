@@ -87,10 +87,10 @@ const Home = () => {
             <div className='home-banner'>
               <img src='/images/fakebanner.png' />
             </div>
+            <Filter totalFilter={filter} length={products.length} total={totalProduct} />
             {
               products && products.length > 0 &&
               <>
-                <Filter totalFilter={filter} length={products.length} total={totalProduct} />
                 <ProductList removeEl={removeProducts} setProducts={setProducts} products={products} />
               </>
               ||

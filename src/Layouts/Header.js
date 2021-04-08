@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store'
-import { getUser } from '../store/actions'
 import Notify from '../components/Notify'
+import SearchModal from '../components/SearchModal'
 import api from '../utils/axios'
-import ProductManager from '../pages/admin/ProductManaging'
+import getImage from '../utils/getImage'
 
 const Header = () => {
   const { state, dispatch } = useContext(DataContext)
@@ -14,9 +14,10 @@ const Header = () => {
   const [mbMenu, setMbMenu] = useState(false)
   const [notify, setNotify] = useState(false)
   const [notifyList, setNotifyList] = useState([])
+  const [searchModal, setSearchModal] = useState(false)
 
+  const userId = localStorage.getItem('id')
   useEffect(() => {
-    const userId = localStorage.getItem('id')
     let tempNotifList = []
     api('GET', 'api/users/v/notify')
       .then(res => {
@@ -53,12 +54,9 @@ const Header = () => {
 
   }, [])
 
-  const sendMessage = (message) => {
-    state.socket.emit('sendMessage', message)
-  }
-
   return (
     <>
+      <SearchModal status={searchModal} setSearchModal={setSearchModal} />
       <div id='header'>
         <div className='container'>
           <div id='desktop'>
@@ -70,7 +68,7 @@ const Header = () => {
               </div>
               <div className='header-right-wrapper'>
                 <div className='search'>
-                  <i style={{ color: 'white', fontSize: '1.1rem', marginRight: 12, cursor: 'pointer' }} className="fas fa-search"></i>
+                  <i onClick={() => setSearchModal(true)} style={{ color: 'white', fontSize: '1.1rem', marginRight: 12, cursor: 'pointer' }} className="fas fa-search"></i>
                 </div>
                 <Link to='/products/create'>
                   <i className="fas fa-money-bill-wave"></i>
@@ -95,7 +93,7 @@ const Header = () => {
                       </div>
                     }
                     <button onClick={() => setChildMenu(!childMenu)}>
-                      <i className="fas fa-user"></i>
+                      <img src={getImage(state.user && state.user.image || null)} />
                       <span>
                         {`${state.user && state.user.firstName} ${state.user && state.user.lastName}`}
                       </span>
@@ -109,7 +107,7 @@ const Header = () => {
                         <div className='child-menu-container'>
                           <ul>
                             <li>
-                              <Link to=''>
+                              <Link to={`/profile/${userId}`}>
                                 <i className="fas fa-user"></i>
                                 <span>
                                   Cá nhân
@@ -190,7 +188,7 @@ const Header = () => {
               <div className='menu-container'>
                 <ul>
                   <li>
-                    <i className="fas fa-search"></i>
+                    <i className="fas fa-search" onClick={() => {setSearchModal(true); setMbMenu(false)}}></i>
                   </li>
                   <li>
                     <Link to='/products/create'>
@@ -201,7 +199,7 @@ const Header = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to=''>
+                    <Link to={`/profile/${userId}`}>
                       <i className="fas fa-user"></i>
                       <span>
                         Cá nhân

@@ -26,7 +26,7 @@ const ProductManager = () => {
     <div id='admin-product'>
       <div className='container'>
         <ManageFilter checkPassed={checkPassed} setCheckPassed={setCheckPassed} />
-        <ProductList checkPassed={checkPassed} setProducts={setProducts} products={products} />
+        <ProductList checkPassed={checkPassed} setProducts={setProducts} products={products} isAdmin={true} />
       </div>
     </div>
   )

@@ -13,6 +13,7 @@ import './static/css/home.scss'
 import './static/css/create.scss'
 import './static/css/main.scss'
 import './static/css/admin.scss'
+import './static/css/profile.scss'
 import './static/css/responsive.scss'
 
 import Product from './pages/product'
@@ -22,6 +23,9 @@ import Create from './pages/create'
 import Update from './pages/update'
 import ProductManager from './pages/admin/ProductManaging'
 import UserManager from './pages/admin/UserManaging.js'
+import Profile from './pages/profile'
+import UserProduct from './pages/profile/UserProducts'
+import Search from './pages/search'
 import Home from './pages/home'
 import Loading from './components/Loading'
 
@@ -49,12 +53,20 @@ const MyApp = () => {
           <Route path='/products/create'>
             <Create />
           </Route>
+          <Route path='/profile/:userId/products'>
+            <MainLayout>
+              <UserProduct />
+            </MainLayout>
+          </Route>
+          <Route path='/profile/:userId'>
+            <Profile />
+          </Route>
           <Route path='/products/update/:productId'>
             <Update />
           </Route>
-          <Route path='/products/:slug'>
+          <Route path='/products/v1/search'>
             <MainLayout>
-              <Product />
+              <Search />
             </MainLayout>
           </Route>
           <Route path='/admin/products'>
@@ -65,6 +77,11 @@ const MyApp = () => {
           <Route path='/admin/users'>
             <MainLayout>
               <UserManager />
+            </MainLayout>
+          </Route>
+          <Route path='/products/:slug'>
+            <MainLayout>
+              <Product />
             </MainLayout>
           </Route>
           <Route path='/'>
