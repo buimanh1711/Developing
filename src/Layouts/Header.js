@@ -35,10 +35,10 @@ const Header = () => {
       if (sellerId === userId) {
         const notif = `Sản phẩm ${name} của bạn đã được quản trị viên duyệt.`
         setNotifyList([
-          ...tempNotifList,
           {
             value: notif
-          }
+          },
+          ...tempNotifList,
         ])
       }
     })
@@ -49,10 +49,10 @@ const Header = () => {
       if (sellerId === userId) {
         const notif = `Sản phẩm ${name} của bạn đã được bán. Hãy liên lạc với người mua để giao dịch`
         setNotifyList([
-          ...tempNotifList,
           {
             value: notif
-          }
+          },
+          ...tempNotifList,
         ])
       }
     })

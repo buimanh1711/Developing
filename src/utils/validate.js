@@ -29,3 +29,11 @@ export const specialCharsValidate = (value) => {
     return false
   }
 }
+
+export const phoneValidate = (value) => {
+  if(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(value)) {
+    return true
+  } else {
+    return false
+  }
+}

@@ -1,6 +1,6 @@
 import { Link, useHistory } from 'react-router-dom'
 import { useState, useEffect, useContext } from 'react'
-import { nameValidate, usernameValidate, emailValidate } from '../../utils/validate'
+import { nameValidate, usernameValidate, emailValidate, phoneValidate } from '../../utils/validate'
 import { DataContext } from '../../store/index'
 import { toggleLoading } from '../../store/actions'
 
@@ -13,6 +13,7 @@ const SignUp = (props) => {
     const [usernameErr, logUsernameErr] = useState(false)
     const [firstNameErr, logFirstNameErr] = useState(false)
     const [lastNameErr, logLastNameErr] = useState(false)
+    const [phoneNumberErr, logPhoneNumberErr] = useState(false)
 
     const [prePass, setPrePass] = useState('')
     const [passCheck, setPassCheck] = useState(false)
@@ -37,6 +38,21 @@ const SignUp = (props) => {
             logEmailErr(!emailValidate(value))
         } else {
             logEmailErr(false)
+        }
+    }
+
+    const phoneNumberValidate = (e) => {
+        let value = e.target.value || ''
+        value = value.trim()
+        setUserData({
+            ...userData,
+            phone: value
+        })
+
+        if (value !== '') {
+            logPhoneNumberErr(!phoneValidate(value))
+        } else {
+            logPhoneNumberErr(false)
         }
     }
 
@@ -159,7 +175,8 @@ const SignUp = (props) => {
                     </div>
                     <label htmlFor='email'>Email: </label>
                     <input onChange={(e) => emailValidation(e)} className={emailErr ? 'validate-error' : ''} required id='email' placeholder='example@email.com' name='email' />
-
+                    <label htmlFor='phone'>Phone Number: </label>
+                    <input onChange={phoneNumberValidate} className={phoneNumberErr ? 'validate-error' : ''} required id='phone' placeholder='+84...' name='phone' />
                     <label htmlFor='username'>Username: </label>
                     <input onChange={(e) => usernameValidation(e)} className={usernameErr ? 'validate-error' : ''} required id='username' placeholder='username123' name='username' />
                     <label htmlFor='password'>Password: </label>

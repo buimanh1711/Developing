@@ -1,22 +1,35 @@
 import { useState, useEffect } from 'react'
-import moment from 'moment'
 
 const DetailCounter = ({ time }) => {
   const [countTime, setCountTime] = useState(null)
 
-  const future = new Date(time)
-  const now = new Date()
   useEffect(() => {
-    var count = (future.getTime() - now.getTime()) / 1000
-    count = Math.floor(count)
-    setInterval(() => {
-      count = count - 1
-      if (count) {
-        const result = new Date(count * 1000).toISOString().substr(11, 8)
-        setCountTime(result)
-      }
-    }, 1000)
-  })
+    time && countStart()
+  }, [time, countTime])
+
+  const countStart = () => {
+    const future = new Date(time)
+    const now = new Date()
+    var count = (future - now) / 1000
+    console.log(future, now)
+    count = parseInt(count)
+    let d = count / 8.64e4 | 0
+    let H = (count % 8.64e4) / 3.6e3 | 0
+    let m = (count % 3.6e3) / 60 | 0
+    let s = count % 60;
+    let z = n => (n < 10 ? '0' : '') + n
+    let result = `${d}:${z(H)}:${z(m)}:${z(s)}`
+
+    setCountTime(result)
+    if (count > 0) {
+      setTimeout(() => {
+        countStart(count)
+      }, 1000)
+    } else {
+      setCountTime('Quá hạn!')
+    }
+  }
+
   return (
     <div id='detail-counter'>
       <h3>{countTime}</h3>

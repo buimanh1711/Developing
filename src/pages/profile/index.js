@@ -6,12 +6,14 @@ import Cookies from 'js-cookie'
 import getUserInfo from '../../utils/getUserInfo'
 
 const Profile = (props) => {
-  const { userId } = useParams() 
-
+  const { userId } = useParams()
+  const currentUser = getUserInfo()
   const history = useHistory()
 
   const firstNameEl = useRef(null)
   const lastNameEl = useRef(null)
+  const emailEl = useRef(null)
+  const phoneEl = useRef(null)
   const oldPassEl = useRef(null)
   const newPassEl = useRef(null)
   const confirmPassEl = useRef(null)
@@ -24,18 +26,17 @@ const Profile = (props) => {
   const [newPassErr, setNewPassErr] = useState(false)
   const [confirmPassErr, setConfirmPassErr] = useState(false)
   const [changingPass, setChangingPass] = useState(false)
-  const [userProducts, setUserProducts] = useState(0)
 
   const handleOldPass = (e) => {
     let value = e.target.value
     value = value.trim()
-    if(value.length < 6) {
+    if (value.length < 6) {
       setOldPassErr(true)
     } else {
       setOldPassErr(false)
     }
 
-    if(value === '') {
+    if (value === '') {
       setOldPassErr(false)
     }
   }
@@ -43,16 +44,16 @@ const Profile = (props) => {
   const handleNewPass = (e) => {
     let value = e.target.value
     value = value.trim()
-    if(value.length < 6) {
+    if (value.length < 6) {
       setNewPassErr(true)
     } else {
       setNewPassErr(false)
     }
 
-    if(value === '') {
+    if (value === '') {
       setNewPassErr(false)
     }
-  
+
   }
 
   const closeChangePass = () => {
@@ -66,13 +67,13 @@ const Profile = (props) => {
     let value = e.target.value
     value = value.trim()
 
-    if(value !== newPassEl.current.value) {
+    if (value !== newPassEl.current.value) {
       setConfirmPassErr(true)
     } else {
       setConfirmPassErr(false)
     }
 
-    if(value === '') {
+    if (value === '') {
       setConfirmPassErr(false)
     }
 
@@ -81,18 +82,22 @@ const Profile = (props) => {
   const handleSubmit = () => {
     const firstName = firstNameEl.current.value && firstNameEl.current.value.length > 0 && firstNameEl.current.value || user.firstName
     const lastName = lastNameEl.current.value && lastNameEl.current.value.length > 0 && lastNameEl.current.value || user.lastName
+    const phone = phoneEl.current.value && phoneEl.current.value.length > 0 && phoneEl.current.value || user.phone
+    const email = emailEl.current.value && emailEl.current.value.length > 0 && emailEl.current.value || user.email
     const oldPass = oldPassEl.current.value && oldPassEl.current.value.length > 5 && oldPassEl.current.value || null
     const newPass = newPassEl.current.value && newPassEl.current.value.length > 5 && newPassEl.current.value || null
-    
+
     const data = {
       file,
       firstName,
       lastName,
+      phone,
+      email,
       newPass,
       oldPass
     }
 
-    if(!oldPassErr && !newPassErr && !confirmPassErr) {
+    if (!oldPassErr && !newPassErr && !confirmPassErr) {
       api('POST', `api/profile/${userId}`, data)
         .then(res => {
           if (res.data && res.data.status) {
@@ -100,11 +105,11 @@ const Profile = (props) => {
             localStorage.setItem('firstName', newInfo.firstName)
             localStorage.setItem('lastName', newInfo.lastName)
             const { newToken } = res.data
-  
-            if(newToken && newToken.length > 0) {
+
+            if (newToken && newToken.length > 0) {
               Cookies.set('userToken', newToken)
             }
-  
+
             setChangeForm(false)
             window.location.reload()
           } else {
@@ -146,7 +151,7 @@ const Profile = (props) => {
   useEffect(() => {
     api('GET', `api/profile/${userId}`)
       .then(res => {
-        if(res.data && res.data.status) {
+        if (res.data && res.data.status) {
           setUser(res.data.userData)
         }
       })
@@ -164,17 +169,19 @@ const Profile = (props) => {
           <div className='edit-form-input'>
             <input ref={firstNameEl} placeholder={user.firstName} />
             <input ref={lastNameEl} placeholder={user.lastName} />
+            <input ref={phoneEl} placeholder={user.phone} />
+            <input ref={emailEl} placeholder={user.email} />
           </div>
           <div className='password-form'>
             <p onClick={() => setChangingPass(true)}>Change Password</p>
             <div className='change-pass-container' hidden={!changingPass}>
-            <i onClick={closeChangePass} className="fas fa-times-circle"></i>
-              <input onChange={handleOldPass} ref={oldPassEl} type='password' style={{borderColor: oldPassErr && 'rgb(231, 100, 100)'}} placeholder='current password'></input>
-              <input onChange={handleNewPass} ref={newPassEl} type='password' style={{borderColor: newPassErr && 'rgb(231, 100, 100)'}} placeholder='new password'></input>
-              <input onChange={handleConfirmPass} ref={confirmPassEl} type='password' style={{borderColor: confirmPassErr && 'rgb(231, 100, 100)'}} placeholder='confirm password'></input>
+              <i onClick={closeChangePass} className="fas fa-times-circle"></i>
+              <input onChange={handleOldPass} ref={oldPassEl} type='password' style={{ borderColor: oldPassErr && 'rgb(231, 100, 100)' }} placeholder='current password'></input>
+              <input onChange={handleNewPass} ref={newPassEl} type='password' style={{ borderColor: newPassErr && 'rgb(231, 100, 100)' }} placeholder='new password'></input>
+              <input onChange={handleConfirmPass} ref={confirmPassEl} type='password' style={{ borderColor: confirmPassErr && 'rgb(231, 100, 100)' }} placeholder='confirm password'></input>
             </div>
           </div>
-          <button disabled={!(!oldPassErr && !newPassErr && !confirmPassErr)} style={{cursor: !(!oldPassErr && !newPassErr && !confirmPassErr) && 'no-drop' || 'pointer'}} onClick={handleSubmit}>Submit</button>
+          <button disabled={!(!oldPassErr && !newPassErr && !confirmPassErr)} style={{ cursor: !(!oldPassErr && !newPassErr && !confirmPassErr) && 'no-drop' || 'pointer' }} onClick={handleSubmit}>Submit</button>
         </div>
       </div>
       <div className='profile-container'>
@@ -201,18 +208,13 @@ const Profile = (props) => {
                 <button onClick={changeAvt} className='change-avt-btn'>Save</button>
               }
               <p>{`${user && user.firstName} ${user && user.lastName}`}</p>
-            </div>
-            <div className='user-data'>
-              <div className='follow-data'>
-                <span>123</span>
-                <Link to='/'>Follow</Link>
+              <div className='phone-number'>
+                <a style={{ color: 'green' }} href={`tel:${user.phone}`}>Call: {user.phone}</a>
               </div>
-              <div className='following-data'>
-                <span>123</span>
-                <Link to='/'>Following</Link>
+              <div className='email'>
+                <p style={{ fontFamily: 'fontLight' }}>Email: {user.email}</p>
               </div>
               <div className='post-data'>
-                <span>{userProducts || 0}</span>
                 <a href={`/profile/${userId}/products`}>Products</a>
               </div>
             </div>
@@ -220,7 +222,7 @@ const Profile = (props) => {
               <button className='setting' onClick={() => setChangeForm(true)}>
                 <i className="fas fa-user-edit"></i>
               </button>
-              <Link to='/sign-in' className='close-btn'>
+              <Link to='/login' className='close-btn'>
                 <i className="fas fa-power-off"></i>
               </Link>
             </div>
@@ -228,7 +230,7 @@ const Profile = (props) => {
         </div>
       </div>
     </div>
-  
+
   )
 }
 

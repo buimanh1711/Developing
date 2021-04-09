@@ -77,6 +77,7 @@ const Create = () => {
   }
 
   const handleSubmit = (e) => {
+    e.preventDefault(e)
     e.preventDefault()
     const formData = new FormData()
 
@@ -101,8 +102,8 @@ const Create = () => {
 
     api('POST', '/api/products/create', formData)
       .then(res => {
-        console.log(res)
         if (res.data && res.data.status) {
+          console.log(res.data)
           state.socket.emit('user create product', {name})
           history.replace({ pathname: '/' })
         } else {
@@ -169,6 +170,13 @@ const Create = () => {
     setCate(value.name)
   }
 
+  const handlePrice = (e) => {
+    const value = e.target.value 
+    if(value < 0) {
+      e.target.value = 0
+    }
+  }
+
   return (
     <div className='create-post'>
       <div className='container'>
@@ -176,13 +184,13 @@ const Create = () => {
           <Link className='back-to-home' to='/'>
             <i className="fas fa-arrow-left"></i>
           </Link>
-          <h1> Create your own post</h1>
+          <h1> Create your own product</h1>
           <div className='row' style={{ justifyContent: 'center' }}>
             <div className='col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6'>
-              <div className='create-form'>
+              <form onSubmit={handleSubmit} className='create-form'>
                 <div className='create-title'>
                   <label htmlFor='create_title'>Tên</label>
-                  <input ref={nameEl} onChange={(e) => { changeName(e) }} placeholder='ex: How to create React app' id='create_title' />
+                  <input required ref={nameEl} onChange={(e) => { changeName(e) }} placeholder='ex: How to create React app' id='create_title' />
                   <p>Tên sản phẩm</p>
                 </div>
                 <div className='create-category'>
@@ -201,7 +209,7 @@ const Create = () => {
                     }
                   </select>
                   <label style={{ marginLeft: 20 }} htmlFor='create-cate-create'>Thêm mới</label>
-                  <input required={!select} ref={newCateEl} onChange={createNewCate} id='create-cate-create' />
+                  <input required={select} ref={newCateEl} onChange={createNewCate} id='create-cate-create' />
                 </div>
                 <div className='create-producer'>
                   <label htmlFor='create_producer'>Nhãn hiệu</label>
@@ -210,22 +218,22 @@ const Create = () => {
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Giá sàn</label>
-                  <input onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
+                  <input onBlur={handlePrice} required onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
                   <p>Mức giá tối thiểu của sản phẩm</p>
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Bước giá</label>
-                  <input ref={priceStepEl} type='number' id='create_price' />
+                  <input onBlur={handlePrice} required ref={priceStepEl} type='number' id='create_price' />
                   <p>Bước giá mỗi lần đấu giá</p>
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Giá trần</label>
-                  <input onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
+                  <input onBlur={handlePrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
                   <p>Mức giá mua luôn của sản phẩm</p>
                 </div>
                 <div className='create-time'>
                   <label htmlFor='create_price'>Thời gian</label>
-                  <input onChange={changeTime} ref={timeEl} type='date' id='create_price' />
+                  <input required onChange={changeTime} ref={timeEl} type='date' id='create_price' />
                   <p>Thời gian hết hạn đấu giá</p>
                 </div>
 
@@ -254,8 +262,9 @@ const Create = () => {
                   />
                   <p>The Content on the thumb</p>
                 </div>
-                <button onClick={handleSubmit}>Post</button>
-              </div>
+                <button>Post</button>
+              </form>
+            
             </div>
             <div className='col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4'>
               <div className='create-demo'>

@@ -83,12 +83,10 @@ const Product = () => {
   const createAuction = () => {
     if (state && state.login) {
       if (price > minPrice) {
-        const { id, firstName, lastName } = getUserInfo()
+        const user = getUserInfo()
         const data = {
           productId: product._id,
-          user: {
-            id, firstName, lastName,
-          },
+          user,
           price: price,
           playingList,
         }
@@ -102,8 +100,8 @@ const Product = () => {
 
   }
 
-  const getProduct = (product) => {
-    const userInfo = state.user
+  const getProduct = (product, user) => {
+    const userInfo = user || state.user
     state.socket.emit('get product', { product, userInfo })
   }
 
@@ -154,14 +152,17 @@ const Product = () => {
 
                         </div>
                       </div>
-                      <div className='quick-buy' onClick={() => getProduct(product)}>
-                        <span>Mua trực tiếp
-                    <i className="fas fa-shopping-cart"></i>
-                        </span>
-                        <h4>
-                          {product.quickPrice}đ
-                  </h4>
-                      </div>
+                      {
+                        parseInt(product.quickPrice) > 0 &&
+                        <div className='quick-buy' onClick={() => getProduct(product)}>
+                          <span>Mua trực tiếp
+                          <i className="fas fa-shopping-cart"></i>
+                          </span>
+                          <h4>
+                            {product.quickPrice}đ
+                          </h4>
+                        </div>
+                      }
                     </div>
                   </>
                   ||
@@ -174,9 +175,12 @@ const Product = () => {
                       Sản phẩm đã được bán với giá {product.price}đ
                     </h1>
                     {
-                      state.user && state.user.role === 'admin' &&
-                      <Link to={`/profile/${product.winner}`}>
-                        {`Liên hệ người mua`}
+                      (state.user && state.user.id) === (product.seller && product.seller._id) &&
+                      <Link style={{ fontSize: '1.4rem', color: 'green' }} to={`/profile/${product.winner}`}>
+                        <i class="fas fa-phone-volume"></i>
+                        <span style={{ marginLeft: 12 }}>
+                          Liên hệ người mua
+                        </span>
                       </Link>
                     }
                   </>

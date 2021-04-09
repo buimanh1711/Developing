@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import getImage from '../../utils/getImage'
+import HomeCounter from '../../components/homeCounter'
 
 const ProductList = (props) => {
   const { products } = props
@@ -28,7 +29,7 @@ const ProductList = (props) => {
                             {
                               !item.sold &&
                               <div className='auct-info'>
-                                <span>00:00:00</span>
+                                <HomeCounter time={item.time} />
                                 <div className='min-price'>
                                   <Link to={`/products/${item.slug || ''}`}>
                                     <i className="fas fa-gavel"></i>
