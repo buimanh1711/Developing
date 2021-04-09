@@ -103,6 +103,7 @@ const Create = () => {
       .then(res => {
         console.log(res)
         if (res.data && res.data.status) {
+          state.socket.emit('user create product', {name})
           history.replace({ pathname: '/' })
         } else {
           alert(res.data.message)

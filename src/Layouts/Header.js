@@ -15,14 +15,18 @@ const Header = () => {
   const [notify, setNotify] = useState(false)
   const [notifyList, setNotifyList] = useState([])
   const [searchModal, setSearchModal] = useState(false)
+  const [adminNotif, setAdminNotif] = useState(false)
+  const [productNotif, setProductNotif] = useState(false)
 
   const userId = localStorage.getItem('id')
+
   useEffect(() => {
     let tempNotifList = []
     api('GET', 'api/users/v/notify')
       .then(res => {
         if (res.data && res.data.status) {
           tempNotifList = res.data.notifyList
+          tempNotifList.reverse()
           setNotifyList(res.data.notifyList)
         }
       })
@@ -40,7 +44,8 @@ const Header = () => {
     })
 
     state.socket.on('get product notify', data => {
-      const { sellerId, name, err } = data
+      const { sellerId, name, err, userInfo } = data
+
       if (sellerId === userId) {
         const notif = `Sản phẩm ${name} của bạn đã được bán. Hãy liên lạc với người mua để giao dịch`
         setNotifyList([
@@ -52,6 +57,27 @@ const Header = () => {
       }
     })
 
+    state.socket.on('get product notify2', data => {
+      const { notif, userInfo } = data
+      console.log(notif)
+      if (userInfo.id === userId) {
+        setNotifyList([
+          ...tempNotifList,
+          {
+            value: notif
+          }
+        ])
+      }
+    })
+
+    state.socket.on('user send product', data => {
+      console.log('manh')
+      const role = localStorage.getItem('role')
+      if (role === 'admin') {
+        setAdminNotif(true)
+        setProductNotif(true)
+      }
+    })
   }, [])
 
   return (
@@ -143,7 +169,11 @@ const Header = () => {
                 }
                 {
                   state.login && state.user.role === 'admin' &&
-                  <button className='admin-btn' onClick={() => setManageMenu(!manageMenu)} style={{ marginLeft: 16 }}>
+                  <button className='admin-btn' onClick={() => { setManageMenu(!manageMenu); setAdminNotif(false) }} style={{ marginLeft: 16 }}>
+                    {
+                      adminNotif &&
+                      <span className='manage-notif'></span>
+                    }
                     <i style={{ marginRight: 8 }} className="fas fa-tasks"></i>
                     <span>
                       Quản lý
@@ -158,7 +188,11 @@ const Header = () => {
                       <div className='child-menu-container'>
                         <ul>
                           <li>
-                            <Link to='/admin/products'>
+                            <Link onClick={() => setProductNotif(false)} className='manage-product' to='/admin/products'>
+                              {
+                                productNotif &&
+                                <span className='manage-notif'></span>
+                              }
                               <i className="fas fa-shopping-bag"></i>
                               <span>
                                 Sản phẩm
@@ -188,7 +222,7 @@ const Header = () => {
               <div className='menu-container'>
                 <ul>
                   <li>
-                    <i className="fas fa-search" onClick={() => {setSearchModal(true); setMbMenu(false)}}></i>
+                    <i className="fas fa-search" onClick={() => { setSearchModal(true); setMbMenu(false) }}></i>
                   </li>
                   <li>
                     <Link to='/products/create'>

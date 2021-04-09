@@ -19,6 +19,7 @@ const Product = () => {
   const [playingList, setPlayingList] = useState([])
 
   useEffect(() => {
+
     state.socket.on('receive auction', (data) => {
       console.log(playingList)
       const { user } = data
@@ -80,25 +81,28 @@ const Product = () => {
   }
 
   const createAuction = () => {
-    if (price > minPrice) {
-      const { id, firstName, lastName } = getUserInfo()
-      const data = {
-        productId: product._id,
-        user: {
-          id, firstName, lastName,
-        },
-        price: price,
-        playingList,
+    if (state && state.login) {
+      if (price > minPrice) {
+        const { id, firstName, lastName } = getUserInfo()
+        const data = {
+          productId: product._id,
+          user: {
+            id, firstName, lastName,
+          },
+          price: price,
+          playingList,
+        }
+        state.socket.emit('create auction', data)
+      } else {
+        alert('Giá không hợp lệ!')
       }
-      state.socket.emit('create auction', data)
     } else {
-      alert('Giá không hợp lệ!')
+      alert('Bạn chưa đăng nhập')
     }
 
   }
 
   const getProduct = (product) => {
-
     const userInfo = state.user
     state.socket.emit('get product', { product, userInfo })
   }
@@ -169,6 +173,12 @@ const Product = () => {
                     <h1 className='done'>
                       Sản phẩm đã được bán với giá {product.price}đ
                     </h1>
+                    {
+                      state.user && state.user.role === 'admin' &&
+                      <Link to={`/profile/${product.winner}`}>
+                        {`Liên hệ người mua`}
+                      </Link>
+                    }
                   </>
                 }
               </div>

@@ -6,7 +6,7 @@ const SearchModal = (props) => {
   const [check, setCheck] = useState(false)
   const formEl = useRef(null)
   const inputEl = useRef(null)
-  console.log(props)
+
   useEffect(() => {
     inputEl.current.focus()
   })

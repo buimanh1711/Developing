@@ -20,7 +20,7 @@
     .header-right-wrapper {
       display: flex;
       align-items: center;
-
+      position: relative;
       a {
         margin: auto 16px;
         color: white;
@@ -30,6 +30,16 @@
         }
       }
       .admin-btn {
+        .manage-notif {
+          width: 12px;
+          height: 12px;
+          background: red;
+          display: inline-block;
+          position: absolute;
+          border-radius: 50%;
+          right: 0;
+          top: -4px;
+        }
         a {
           margin: 0;
         }
@@ -56,6 +66,12 @@
         }
 
         .child-menu {
+          .manage-product {
+            position: relative;
+            .manage-notif {
+              right: -20px;
+            }
+          }
           position: absolute;
           ul {
             background-color: white;

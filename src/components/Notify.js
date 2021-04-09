@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 
 const Notify = ({ notifyList }) => {
   const newNotifyList = notifyList
-  console.log(newNotifyList)
   return (
     <div className='notification'>
       <div className='notif-container'>
