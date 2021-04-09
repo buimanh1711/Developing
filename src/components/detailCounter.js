@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 
 const DetailCounter = ({ time }) => {
   const [countTime, setCountTime] = useState(null)
-  console.log(time)
   useEffect(() => {
     time && countStart()
   }, [time, countTime])
@@ -11,7 +10,6 @@ const DetailCounter = ({ time }) => {
     const future = new Date(time)
     const now = new Date()
     var count = (future - now) / 1000
-    console.log(future, now)
     count = parseInt(count)
     let d = count / 8.64e4 | 0
     let H = (count % 8.64e4) / 3.6e3 | 0

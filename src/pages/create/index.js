@@ -45,7 +45,6 @@ const Create = () => {
     api('GET', '/api/auth')
       .then(res => {
         if (res.data && !res.data.status) {
-          console.log(res)
           setTimeout(() => {
             history.replace({ pathname: '/login' })
           }, 1000)
@@ -103,7 +102,6 @@ const Create = () => {
     api('POST', '/api/products/create', formData)
       .then(res => {
         if (res.data && res.data.status) {
-          console.log(res.data)
           state.socket.emit('user create product', {name})
           history.replace({ pathname: '/' })
           if(res.data.message) {

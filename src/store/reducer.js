@@ -3,7 +3,6 @@ import * as Actions from './constant'
 const reducer = (state, action) => {
   switch (action.type) {
     case Actions.GET_USER: {
-      console.log('manh')
       const login = localStorage.getItem('login')
       const firstName = localStorage.getItem('firstName')
       const lastName = localStorage.getItem('lastName')

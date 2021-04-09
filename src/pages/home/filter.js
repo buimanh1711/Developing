@@ -123,7 +123,6 @@ const FilterSelector = (props) => {
   useEffect(() => {
     api('GET', 'api/categories')
       .then(res => {
-        console.log(res)
         if (res.data && res.data.status) {
           setCategory(res.data.category)
         }

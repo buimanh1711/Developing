@@ -24,7 +24,7 @@ const UserProduct = (props) => {
 
           dispatch(toggleLoading(false))
         } else {
-          console.log('manh')
+          console.log('done')
         }
       })
       .catch(err => console.log(err))

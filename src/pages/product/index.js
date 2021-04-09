@@ -21,7 +21,6 @@ const Product = () => {
   useEffect(() => {
 
     state.socket.on('receive auction', (data) => {
-      console.log(playingList)
       const { user } = data
       const newPlayingList = [
         {

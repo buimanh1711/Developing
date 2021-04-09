@@ -31,7 +31,7 @@ import Loading from './components/Loading'
 
 const MyApp = () => {
   const { state, dispatch } = useContext(DataContext)
-
+  console.log('By _mb1o4er')
   useEffect(() => {
     dispatch(getUser())
   }, [])

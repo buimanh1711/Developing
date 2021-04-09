@@ -59,7 +59,6 @@ const Header = () => {
 
     state.socket.on('get product notify2', data => {
       const { notif, userInfo } = data
-      console.log(notif)
       if (userInfo.id === userId) {
         setNotifyList([
           ...tempNotifList,
@@ -71,7 +70,6 @@ const Header = () => {
     })
 
     state.socket.on('user send product', data => {
-      console.log('manh')
       const role = localStorage.getItem('role')
       if (role === 'admin') {
         setAdminNotif(true)

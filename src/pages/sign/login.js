@@ -74,11 +74,8 @@ const SignIn = (props) => {
       dispatch(toggleLoading(true))
       api('POST', '/api/login', userData)
         .then(res => {
-          console.log(res)
           if (res.data && res.data.status) {
             const { user } = res.data
-            console.log(user)
-            console.log(res.data)
             localStorage.setItem('login', true)
             localStorage.setItem('id', user._id)
             localStorage.setItem('image', user.image)
@@ -90,7 +87,6 @@ const SignIn = (props) => {
             Cookies.set('userToken', res.data.token, { expires: 7 })
             dispatch(toggleLoading(false))
             dispatch(getUser())
-            console.log(state)
             history.replace({ pathname: '/' })
           } else {
             alert('Thông tin tài khoản không đúng, vui lòng đăng nhập lại.')

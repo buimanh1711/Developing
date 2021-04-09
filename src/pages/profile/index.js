@@ -118,7 +118,7 @@ const Profile = (props) => {
             setChangeForm(false)
             window.location.reload()
           } else {
-            console.log(res.data)
+            console.log('done')
           }
         })
     }
