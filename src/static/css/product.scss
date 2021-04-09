@@ -164,6 +164,8 @@
       color: #1ab7ea;
     }
 
+    
+
     .detail {
       margin: 18px 0px;
       span {
@@ -200,6 +202,15 @@
 
   #detail-counter  h3{
     color: rgb(247, 96, 96);
+  }
+
+  .seller {
+    margin: 16px 0px;
+
+    a {
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
   }
 }
 

@@ -1,24 +1,31 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import api from '../../utils/axios'
 import toSlug from '../../utils/toSlug'
 import ProductList from '../../components/productList'
+import { DataContext } from '../../store'
+import { toggleLoading } from '../../store/actions'
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 }
 
 const Search = (props) => {
+  const { state, dispatch } = useContext(DataContext)
+
   const param = useQuery().get('q')
   const slug = toSlug(param)
   const [products, setProducts] = useState([])
   const [status, setStatus] = useState(true)
 
   useEffect(() => {
+    dispatch(toggleLoading(true))
+
     api('GET', `api/products/search/${slug}`)
       .then(res => {
         if (res.data && res.data.status) {
           setProducts(res.data.products)
+          dispatch(toggleLoading(false))
         } else {
           setStatus(false)
         }

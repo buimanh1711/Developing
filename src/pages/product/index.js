@@ -87,7 +87,7 @@ const Product = () => {
       const now = new Date()
       var count = (future - now) / 1000
       count = parseInt(count)
-      if(count > 0) {
+      if (count > 0) {
         if (price > minPrice) {
           const user = getUserInfo()
           const data = {
@@ -131,6 +131,10 @@ const Product = () => {
                 <div className='cate-container'>
                   <span className='category'> {product.category && product.category.name || 'Đang cập nhật'}</span>
                   <span className='producer'> #{product.producer || 'Đang cập nhật'}</span>
+                  <div className='seller'>
+                    <i className="fas fa-user"></i>
+                    <Link to={`/profile/${product.seller && product.seller._id}`}> {product.seller && `${product.seller.firstName} ${product.seller.lastName}` || 'Đang cập nhật'}</Link>
+                  </div>
                 </div>
                 {
                   !product.sold &&

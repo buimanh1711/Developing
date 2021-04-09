@@ -1,17 +1,20 @@
 import TextareaAutosize from 'react-textarea-autosize'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
 import toSlug from '../../utils/toSlug'
 import { useHistory, Link, useParams } from 'react-router-dom'
 import getImage from '../../utils/getImage'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { DataContext } from '../../store'
+import { toggleLoading } from '../../store/actions'
 
 const defaultValue = {
   select: 'choose'
 }
 
 const Update = () => {
+  const { state, dispatch } = useContext(DataContext)
 
   const history = useHistory()
   const productId = useParams().productId || null
@@ -41,6 +44,8 @@ const Update = () => {
   const [originData, setOriginData] = useState({})
 
   useEffect(() => {
+    dispatch(toggleLoading(true))
+
     api('GET', '/api/auth')
       .then(res => {
         if (res.data && !res.data.status) {
@@ -62,7 +67,8 @@ const Update = () => {
     api('GET', `api/products/update/${productId}`)
       .then(res => {
         if (res.data && res.data.status) {
-          console.log(res.data)
+          dispatch(toggleLoading(false))
+
           setOriginData(res.data.product)
           setContent(res.data.product.content)
           cateEl.current.value = JSON.stringify(res.data.product.category)
@@ -126,7 +132,7 @@ const Update = () => {
         if (res.data && res.data.status) {
           history.replace({ pathname: '/' })
         } else {
-          alert(res.data.message)
+          alert('Lỗi cập nhật sản phẩm')
         }
       })
       .catch(err => console.log('this is err: ', err))

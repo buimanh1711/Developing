@@ -142,7 +142,7 @@ const SignUp = (props) => {
                         dispatch(toggleLoading(false))
                         history.replace({ pathname: '/login' })
                     } else {
-                        alert(res.data.message)
+                        alert('Lỗi đăng kí tài khoản')
                     }
                 })
                 .catch(err => {

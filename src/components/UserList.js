@@ -75,7 +75,7 @@ const UserList = (props) => {
         </form>
       </div>
       {
-        users && users.length > 0 &&
+        users && users.length > 1 &&
         <ul>
           <p className='alert alert-success'>All users:</p>
           {

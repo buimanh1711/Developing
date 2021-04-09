@@ -1,11 +1,15 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useContext } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import api from '../../utils/axios'
 import getImage from '../../utils/getImage'
 import Cookies from 'js-cookie'
 import getUserInfo from '../../utils/getUserInfo'
+import { DataContext } from '../../store'
+import { toggleLoading } from '../../store/actions'
 
 const Profile = (props) => {
+  const { state, dispatch } = useContext(DataContext)
+
   const { userId } = useParams()
   const currentUser = getUserInfo()
   const history = useHistory()
@@ -124,9 +128,12 @@ const Profile = (props) => {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('oldFile', user.image)
+    dispatch(toggleLoading(true))
+
     api('POST', `api/profile/avt/${userId}`, formData)
       .then(res => {
         if (res.data && res.data.status) {
+          dispatch(toggleLoading(false))
           localStorage.setItem('image', res.data.newImage)
           window.location.reload()
         }
@@ -150,11 +157,15 @@ const Profile = (props) => {
   }
 
   useEffect(() => {
+    dispatch(toggleLoading(true))
+
     api('GET', `api/profile/${userId}`)
       .then(res => {
         if (res.data && res.data.status) {
           setUser(res.data.userData)
           setOrigin(res.data.official)
+
+          dispatch(toggleLoading(false))
         }
       })
 

@@ -1,11 +1,15 @@
 import UserList from '../../components/UserList'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
+import { DataContext } from '../../store'
+import { toggleLoading } from '../../store/actions'
 
 const UserManager = () => {
   const [users, setUsers] = useState([])
+  const { state, dispatch } = useContext(DataContext)
 
   useEffect(() => {
+    dispatch(toggleLoading(true))
     api('GET', 'api/auth/admin')
       .then(res => {
         if (res.data && res.data.status) {
@@ -13,10 +17,11 @@ const UserManager = () => {
             .then(userRes => {
               if (userRes.data && userRes.data.status) {
                 setUsers(userRes.data.users)
+                dispatch(toggleLoading(false))
               }
             })
         } else {
-          alert('You are not Administrator!')
+          alert('Bạn không có quyền truy cập trang này!')
         }
       })
   }, [])
