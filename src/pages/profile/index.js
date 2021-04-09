@@ -26,6 +26,7 @@ const Profile = (props) => {
   const [newPassErr, setNewPassErr] = useState(false)
   const [confirmPassErr, setConfirmPassErr] = useState(false)
   const [changingPass, setChangingPass] = useState(false)
+  const [origin, setOrigin] = useState(false)
 
   const handleOldPass = (e) => {
     let value = e.target.value
@@ -153,6 +154,7 @@ const Profile = (props) => {
       .then(res => {
         if (res.data && res.data.status) {
           setUser(res.data.userData)
+          setOrigin(res.data.official)
         }
       })
 
@@ -160,30 +162,33 @@ const Profile = (props) => {
 
   return (
     <div className='profile'>
-      <div className='edit-form' hidden={!changeForm}>
-        <button onClick={() => setChangeForm(false)} className='back-btn'>
-          <i className="fas fa-times"></i>
-        </button>
-        <div className='edit-form-container'>
-          <h3>Edit your profile</h3>
-          <div className='edit-form-input'>
-            <input ref={firstNameEl} placeholder={user.firstName} />
-            <input ref={lastNameEl} placeholder={user.lastName} />
-            <input ref={phoneEl} placeholder={user.phone} />
-            <input ref={emailEl} placeholder={user.email} />
-          </div>
-          <div className='password-form'>
-            <p onClick={() => setChangingPass(true)}>Change Password</p>
-            <div className='change-pass-container' hidden={!changingPass}>
-              <i onClick={closeChangePass} className="fas fa-times-circle"></i>
-              <input onChange={handleOldPass} ref={oldPassEl} type='password' style={{ borderColor: oldPassErr && 'rgb(231, 100, 100)' }} placeholder='current password'></input>
-              <input onChange={handleNewPass} ref={newPassEl} type='password' style={{ borderColor: newPassErr && 'rgb(231, 100, 100)' }} placeholder='new password'></input>
-              <input onChange={handleConfirmPass} ref={confirmPassEl} type='password' style={{ borderColor: confirmPassErr && 'rgb(231, 100, 100)' }} placeholder='confirm password'></input>
+      {
+        origin &&
+        <div className='edit-form' hidden={!changeForm}>
+          <button onClick={() => setChangeForm(false)} className='back-btn'>
+            <i className="fas fa-times"></i>
+          </button>
+          <div className='edit-form-container'>
+            <h3>Edit your profile</h3>
+            <div className='edit-form-input'>
+              <input ref={firstNameEl} placeholder={user.firstName} />
+              <input ref={lastNameEl} placeholder={user.lastName} />
+              <input ref={phoneEl} placeholder={user.phone} />
+              <input ref={emailEl} placeholder={user.email} />
             </div>
+            <div className='password-form'>
+              <p onClick={() => setChangingPass(true)}>Change Password</p>
+              <div className='change-pass-container' hidden={!changingPass}>
+                <i onClick={closeChangePass} className="fas fa-times-circle"></i>
+                <input onChange={handleOldPass} ref={oldPassEl} type='password' style={{ borderColor: oldPassErr && 'rgb(231, 100, 100)' }} placeholder='current password'></input>
+                <input onChange={handleNewPass} ref={newPassEl} type='password' style={{ borderColor: newPassErr && 'rgb(231, 100, 100)' }} placeholder='new password'></input>
+                <input onChange={handleConfirmPass} ref={confirmPassEl} type='password' style={{ borderColor: confirmPassErr && 'rgb(231, 100, 100)' }} placeholder='confirm password'></input>
+              </div>
+            </div>
+            <button disabled={!(!oldPassErr && !newPassErr && !confirmPassErr)} style={{ cursor: !(!oldPassErr && !newPassErr && !confirmPassErr) && 'no-drop' || 'pointer' }} onClick={handleSubmit}>Submit</button>
           </div>
-          <button disabled={!(!oldPassErr && !newPassErr && !confirmPassErr)} style={{ cursor: !(!oldPassErr && !newPassErr && !confirmPassErr) && 'no-drop' || 'pointer' }} onClick={handleSubmit}>Submit</button>
         </div>
-      </div>
+      }
       <div className='profile-container'>
         <div className='profile-header-container'>
           <div className='profile-header'>
@@ -197,10 +202,13 @@ const Profile = (props) => {
           <div className='body-user-info'>
             <div className='avt-wrapper'>
               <img src={file ? data.path : getImage(user.image)} />
-              <label htmlFor='change-avt' className='change-avt'>
-                <i className="fas fa-camera"></i>
-                <input id='change-avt' onChange={handleAvtChange} type='file' placeholder='avatar' />
-              </label>
+              {
+                origin &&
+                <label htmlFor='change-avt' className='change-avt'>
+                  <i className="fas fa-camera"></i>
+                  <input id='change-avt' onChange={handleAvtChange} type='file' placeholder='avatar' />
+                </label>
+              }
             </div>
             <div className='user-bio'>
               {
@@ -218,14 +226,17 @@ const Profile = (props) => {
                 <a href={`/profile/${userId}/products`}>Products</a>
               </div>
             </div>
-            <div className='option'>
-              <button className='setting' onClick={() => setChangeForm(true)}>
-                <i className="fas fa-user-edit"></i>
-              </button>
-              <Link to='/login' className='close-btn'>
-                <i className="fas fa-power-off"></i>
-              </Link>
-            </div>
+            {
+              origin &&
+              <div className='option'>
+                <button className='setting' onClick={() => setChangeForm(true)}>
+                  <i className="fas fa-user-edit"></i>
+                </button>
+                <Link to='/login' className='close-btn'>
+                  <i className="fas fa-power-off"></i>
+                </Link>
+              </div>
+            }
           </div>
         </div>
       </div>

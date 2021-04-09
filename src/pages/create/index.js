@@ -106,8 +106,11 @@ const Create = () => {
           console.log(res.data)
           state.socket.emit('user create product', {name})
           history.replace({ pathname: '/' })
+          if(res.data.message) {
+            alert(res.data.message)
+          }
         } else {
-          alert(res.data.message)
+          alert('Lỗi thêm sản phẩm')
         }
       })
       .catch(err => console.log('this is err: ', err))

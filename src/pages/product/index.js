@@ -34,17 +34,7 @@ const Product = () => {
       ]
       setMinPrice(data.price)
       setPlayingList(newPlayingList)
-    })
 
-    state.socket.on('get product notify', data => {
-      const { userInfo, price, newProduct } = data
-      console.log(product)
-      setProduct({
-        ...newProduct,
-        sold: true,
-        winner: userInfo.id,
-        price
-      })
     })
 
     dispatch(toggleLoading(true))
@@ -54,6 +44,17 @@ const Product = () => {
           setProduct(res.data.product)
           setPlayingList(res.data.product.playingList.reverse())
           setMinPrice(res.data.product.minPrice)
+          state.socket.on('get product notify', data => {
+            const { userInfo, price, newProduct } = data
+            if (res.data.product._id === newProduct._id) {
+              setProduct({
+                ...newProduct,
+                sold: true,
+                winner: userInfo.id,
+                price
+              })
+            }
+          })
         }
       })
       .catch(err => {
@@ -82,17 +83,25 @@ const Product = () => {
 
   const createAuction = () => {
     if (state && state.login) {
-      if (price > minPrice) {
-        const user = getUserInfo()
-        const data = {
-          productId: product._id,
-          user,
-          price: price,
-          playingList,
+      const future = new Date(product.time)
+      const now = new Date()
+      var count = (future - now) / 1000
+      count = parseInt(count)
+      if(count > 0) {
+        if (price > minPrice) {
+          const user = getUserInfo()
+          const data = {
+            productId: product._id,
+            user,
+            price: price,
+            playingList,
+          }
+          state.socket.emit('create auction', data)
+        } else {
+          alert('Giá không hợp lệ!')
         }
-        state.socket.emit('create auction', data)
       } else {
-        alert('Giá không hợp lệ!')
+        alert('Hết hạn đấu giá')
       }
     } else {
       alert('Bạn chưa đăng nhập')

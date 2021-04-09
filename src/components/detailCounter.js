@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 const DetailCounter = ({ time }) => {
   const [countTime, setCountTime] = useState(null)
-
+  console.log(time)
   useEffect(() => {
     time && countStart()
   }, [time, countTime])

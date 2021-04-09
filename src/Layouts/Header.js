@@ -188,7 +188,7 @@ const Header = () => {
                       <div className='child-menu-container'>
                         <ul>
                           <li>
-                            <Link onClick={() => setProductNotif(false)} className='manage-product' to='/admin/products'>
+                            <a onClick={() => setProductNotif(false)} className='manage-product' href='/admin/products'>
                               {
                                 productNotif &&
                                 <span className='manage-notif'></span>
@@ -196,8 +196,8 @@ const Header = () => {
                               <i className="fas fa-shopping-bag"></i>
                               <span>
                                 Sản phẩm
-                            </span>
-                            </Link>
+                              </span>
+                            </a>
                           </li>
                           <li>
                             <Link to='/admin/users'>
