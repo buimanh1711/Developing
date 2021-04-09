@@ -61,4 +61,36 @@
       margin-left: auto;
     }
   }
+
+  .user-search {
+    margin: 12px 0px;
+
+    form {
+      margin-left: auto;
+      display: inline-block;
+      .input-wrapper {
+        position: relative;
+        input {
+          width: 300px;
+          outline: none;
+          border: 1px solid rgba(114, 109, 109, 0.568);
+          padding: 4px 12px;
+        }
+        button {
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          outline: none;
+          border: none;
+          cursor: pointer;
+        }
+
+        button:hover {
+          color: rgba(104, 98, 98, 0.637);
+        }
+      }
+    }
+  }
 }
