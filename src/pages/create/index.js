@@ -85,7 +85,8 @@ const Create = () => {
     const cateObj = cateEl.current.value
     const newCate = newCateEl.current.value.length > 0 && newCateEl.current.value || null
     const slug = toSlug(currentName)
-    const currentCate = cateObj !== defaultValue.select && JSON.parse(cateObj)
+    const currentCate = cateObj !== defaultValue.select && JSON.parse(cateObj) || null
+    if(!currentCate) return alert('Yêu cầu chọn thể loại')
 
     formData.append('name', currentName)
     formData.append('content', currentContent)
@@ -98,7 +99,7 @@ const Create = () => {
     formData.append('producer', producerEl.current.value)
     formData.append('slug', slug)
     newCate && formData.append('newCate', newCate)
-
+    if (minPriceEl.current.value >= quickPriceEl.current.value) return alert('Giá trần phải lớn hơn giá tối thiểu')
     api('POST', '/api/products/create', formData)
       .then(res => {
         if (res.data && res.data.status) {
@@ -178,6 +179,14 @@ const Create = () => {
     }
   }
 
+  const handleQuickPrice = (e) => {
+    const value = e.target.value 
+    if(value < 0 || value < minPrice && minPrice > 0) {
+      e.target.value = minPrice
+      alert('Vui lòng nhập giá trần cao hơn mức giá tối thiểu')
+    }
+  }
+
   return (
     <div className='create-post'>
       <div className='container'>
@@ -229,7 +238,7 @@ const Create = () => {
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Giá trần</label>
-                  <input onBlur={handlePrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
+                  <input onBlur={handleQuickPrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' min={minPrice} id='create_price' />
                   <p>Mức giá mua luôn của sản phẩm</p>
                 </div>
                 <div className='create-time'>

@@ -38,7 +38,7 @@ const ProductList = (props) => {
                                 </div>
                               </div>
                               ||
-                              <p style={{color: 'red', marginLeft: 12}}>Đã bán</p>
+                              <p style={{ color: 'rgb(253, 56, 56)', fontFamily: 'fontRegular', marginLeft: 12 }}>Đã bán</p>
                             }
                           </div>
                         </div>

@@ -61,10 +61,10 @@ const Header = () => {
       const { notif, userInfo } = data
       if (userInfo.id === userId) {
         setNotifyList([
-          ...tempNotifList,
           {
             value: notif
-          }
+          },
+          ...tempNotifList,
         ])
       }
     })

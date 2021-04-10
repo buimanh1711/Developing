@@ -24,6 +24,7 @@ const UserProduct = (props) => {
 
           dispatch(toggleLoading(false))
         } else {
+          dispatch(toggleLoading(false))
           console.log('done')
         }
       })

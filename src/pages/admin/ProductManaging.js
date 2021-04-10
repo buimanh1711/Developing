@@ -21,6 +21,8 @@ const ProductManager = () => {
               if (productRes.data && productRes.data.status) {
                 setProducts(productRes.data.products)
                 dispatch(toggleLoading(false))
+              } else {
+                dispatch(toggleLoading(false))
               }
             })
         } else {

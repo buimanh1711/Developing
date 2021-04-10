@@ -126,6 +126,8 @@ const Update = () => {
     formData.append('seller', originData.seller && originData.seller._id)
     formData.append('slug', slug)
     newCate && formData.append('newCate', newCate)
+    
+    if (minPriceEl.current.value >= quickPriceEl.current.value) return alert('Giá trần phải lớn hơn giá tối thiểu')
 
     api('POST', `/api/products/update/${originData._id}`, formData)
       .then(res => {
@@ -212,6 +214,21 @@ const Update = () => {
     setCate(value.name)
   }
 
+  const handlePrice = (e) => {
+    const value = e.target.value 
+    if(value < 0) {
+      e.target.value = 0
+    }
+  }
+
+  const handleQuickPrice = (e) => {
+    const value = e.target.value 
+    if(value < 0 || value < minPrice) {
+      e.target.value = minPrice
+      alert('Vui lòng nhập giá trần cao hơn mức giá tối thiểu')
+    }
+  }
+
   return (
     <div className='create-post'>
       <div className='container'>
@@ -252,17 +269,17 @@ const Update = () => {
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Giá sàn</label>
-                  <input defaultValue={originData.minPrice} onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
+                  <input onBlur={handlePrice} defaultValue={originData.minPrice} onChange={changeMinPrice} ref={minPriceEl} type='number' id='create_price' />
                   <p>Mức giá tối thiểu của sản phẩm</p>
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Bước giá</label>
-                  <input ref={priceStepEl} onChange={changePriceStep} defaultValue={originData.priceStep} type='number' id='create_price' />
+                  <input onBlur={handlePrice} ref={priceStepEl} onChange={changePriceStep} defaultValue={originData.priceStep} type='number' id='create_price' />
                   <p>Bước giá mỗi lần đấu giá</p>
                 </div>
                 <div className='create-price'>
                   <label htmlFor='create_price'>Giá trần</label>
-                  <input defaultValue={originData.quickPrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
+                  <input onBlur={handleQuickPrice} defaultValue={originData.quickPrice} min={minPrice} onChange={changeQuickPrice} ref={quickPriceEl} type='number' id='create_price' />
                   <p>Mức giá mua luôn của sản phẩm</p>
                 </div>
                 <div className='create-time'>

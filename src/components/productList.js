@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import getImage from '../utils/getImage'
 import api from '../utils/axios'
 import { DataContext } from '../store/index'
-import HomeCounter from './homeCounter' 
+import HomeCounter from './homeCounter'
 
 const ProductList = (props) => {
   const { state, dispatch } = useContext(DataContext)
@@ -71,7 +71,7 @@ const ProductList = (props) => {
                         }
                         {
                           !search && isSeller && !isAdmin &&
-                          <Link to={`/products/update/${item._id}`} style={{width: '50%', textAlign: 'center', display: 'inline-block'}} className='pass-btn pass'>Sửa</Link>
+                          <Link to={`/products/update/${item._id}`} style={{ width: '50%', textAlign: 'center', display: 'inline-block' }} className='pass-btn pass'>Sửa</Link>
                         }
                       </div>
                       <div className='item'>
@@ -85,15 +85,20 @@ const ProductList = (props) => {
                             <Link to={`/products/${item.slug || ''}`}>{item.name}</Link>
                             <i className='producer'>#{item.category && item.category.name || 'Đang cập nhật...'}</i>
                             <p>{item.producer || 'Đang cập nhật...'}</p>
-                            <div className='auct-info'>
-                              <HomeCounter time={item.time} />
-                              <div className='min-price'>
-                                <Link to={`/products/${item.slug || ''}`}>
-                                  <i className="fas fa-gavel"></i>
-                                  <span>{item.minPrice || 0}đ</span>
-                                </Link>
+                            {
+                              !item.sold &&
+                              <div className='auct-info'>
+                                <HomeCounter time={item.time} />
+                                <div className='min-price'>
+                                  <Link to={`/products/${item.slug || ''}`}>
+                                    <i className="fas fa-gavel"></i>
+                                    <span>{item.minPrice || 0}đ</span>
+                                  </Link>
+                                </div>
                               </div>
-                            </div>
+                              ||
+                              <p style={{ color: 'rgb(253, 56, 56)', fontFamily: 'fontRegular', marginLeft: 12 }}>Đã bán</p>
+                            }
                           </div>
                         </div>
                       </div>

@@ -46,7 +46,7 @@ const Search = (props) => {
               <ProductList search={true} products={products} />
             </>
             ||
-            <div className='search-result'>
+            <div className='search-result container'>
               <p className='alert alert-warning' style={{ color: 'rgb(223, 83, 83)' }}>No result for '{param}'!</p>
             </div>
           }

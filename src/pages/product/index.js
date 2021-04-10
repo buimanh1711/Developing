@@ -40,20 +40,27 @@ const Product = () => {
     api('GET', `api/products/${slug}`)
       .then(res => {
         if (res.data && res.data.status) {
-          setProduct(res.data.product)
-          setPlayingList(res.data.product.playingList.reverse())
-          setMinPrice(res.data.product.minPrice)
-          state.socket.on('get product notify', data => {
-            const { userInfo, price, newProduct } = data
-            if (res.data.product._id === newProduct._id) {
-              setProduct({
-                ...newProduct,
-                sold: true,
-                winner: userInfo.id,
-                price
-              })
-            }
-          })
+          if (res.data.product.passed) {
+            setProduct(res.data.product)
+            setPlayingList(res.data.product.playingList.reverse())
+            setMinPrice(res.data.product.minPrice)
+            state.socket.on('get product notify', data => {
+              const { userInfo, price, newProduct } = data
+              if (res.data.product._id === newProduct._id) {
+                setProduct({
+                  ...newProduct,
+                  sold: true,
+                  winner: userInfo.id,
+                  seller: res.data.product.seller,
+                  price
+                })
+              }
+            })
+          } else {
+            return alert('Sản phẩm chưa được duyệt')
+          }
+        } else {
+          return ('Lỗi lấy thông tin sản phẩm')
         }
       })
       .catch(err => {
@@ -87,7 +94,9 @@ const Product = () => {
       var count = (future - now) / 1000
       count = parseInt(count)
       if (count > 0) {
-        if (price > minPrice) {
+        if (product.quickPrice > 0 && price >= product.quickPrice) {
+          return getProduct(product)
+        } else if (price > minPrice) {
           const user = getUserInfo()
           const data = {
             productId: product._id,
@@ -110,7 +119,9 @@ const Product = () => {
 
   const getProduct = (product, user) => {
     const userInfo = user || state.user
-    state.socket.emit('get product', { product, userInfo })
+    if ((userInfo.id || userInfo._id) !== product.seller._id) {
+      state.socket.emit('get product', { product, userInfo })
+    }
   }
 
   return (
@@ -143,12 +154,16 @@ const Product = () => {
                       <div className='price'>
                         <span>Giá thầu hiện tại</span>
                         <h6>{minPrice}đ</h6>
-                        <div className='auction'>
-                          <label htmlFor='product_auct'>Trả giá: </label>
-                          <input key={minPrice} onChange={handleChange} onBlur={handleBlur} type='number' id='product_auct' defaultValue={minPrice} step={product.priceStep || 1000} min={minPrice}></input>
-                          <p>Bước giá: {product.priceStep || 1000}đ</p>
-                          <button onClick={createAuction}>Xác nhận</button>
-                        </div>
+                        {
+                          (state.user && state.user.id) !== (product.seller && product.seller._id) &&
+                          <div className='auction'>
+                            <label htmlFor='product_auct'>Trả giá: </label>
+                            <input key={minPrice} onChange={handleChange} onBlur={handleBlur} type='number' id='product_auct' defaultValue={minPrice} step={product.priceStep || 1000} min={minPrice} max={product.quickPrice > 0 && product.quickPrice} ></input>
+                            <p>Bước giá: {product.priceStep || 1000}đ</p>
+                            <button onClick={createAuction}>Xác nhận</button>
+                          </div>
+
+                        }
                         <div className='winner'>
                           {
                             playingList && playingList.length > 0
