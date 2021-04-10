@@ -118,7 +118,7 @@ const Profile = (props) => {
             setChangeForm(false)
             window.location.reload()
           } else {
-            console.log('done')
+            alert('Lỗi thay đổi thông tin')
           }
         })
     }
@@ -166,6 +166,9 @@ const Profile = (props) => {
           setOrigin(res.data.official)
 
           dispatch(toggleLoading(false))
+        } else {
+          alert('Lỗi lấy thông tin cá nhân')
+          dispatch(toggleLoading(false))
         }
       })
 
@@ -182,10 +185,10 @@ const Profile = (props) => {
           <div className='edit-form-container'>
             <h3>Edit your profile</h3>
             <div className='edit-form-input'>
-              <input ref={firstNameEl} placeholder={user.firstName} />
-              <input ref={lastNameEl} placeholder={user.lastName} />
-              <input ref={phoneEl} placeholder={user.phone} />
-              <input ref={emailEl} placeholder={user.email} />
+              <input ref={firstNameEl} placeholder={user && user.firstName} />
+              <input ref={lastNameEl} placeholder={user && user.lastName} />
+              <input ref={phoneEl} placeholder={user && user.phone} />
+              <input ref={emailEl} placeholder={user && user.email} />
             </div>
             <div className='password-form'>
               <p onClick={() => setChangingPass(true)}>Change Password</p>
@@ -212,7 +215,7 @@ const Profile = (props) => {
         <div className='profile-body'>
           <div className='body-user-info'>
             <div className='avt-wrapper'>
-              <img src={file ? data.path : getImage(user.image)} />
+              <img src={file ? data.path : getImage(user && user.image)} />
               {
                 origin &&
                 <label htmlFor='change-avt' className='change-avt'>
@@ -226,12 +229,12 @@ const Profile = (props) => {
                 file &&
                 <button onClick={changeAvt} className='change-avt-btn'>Save</button>
               }
-              <p>{`${user && user.firstName} ${user && user.lastName}`}</p>
+              <p>{`${user && user && user.firstName} ${user && user && user.lastName}`}</p>
               <div className='phone-number'>
-                <a style={{ color: 'green' }} href={`tel:${user.phone}`}>Call: {user.phone}</a>
+                <a style={{ color: 'green' }} href={`tel:${user && user.phone}`}>Call: {user && user.phone}</a>
               </div>
               <div className='email'>
-                <p style={{ fontFamily: 'fontLight' }}>Email: {user.email}</p>
+                <p style={{ fontFamily: 'fontLight' }}>Email: {user && user.email}</p>
               </div>
               <div className='post-data'>
                 <a href={`/profile/${userId}/products`}>Products</a>

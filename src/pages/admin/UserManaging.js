@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
 import { DataContext } from '../../store'
 import { toggleLoading } from '../../store/actions'
+import Breadcrumb from '../../components/Breadcrumb'
 
 const UserManager = () => {
   const [users, setUsers] = useState([])
@@ -27,9 +28,12 @@ const UserManager = () => {
   }, [])
 
   return (
+    <>
+    <Breadcrumb category='Quản lý người dùng' />
     <div id='admin-product' className='container'>
       <UserList users={users} setUsers={setUsers} />
     </div>
+    </>
   )
 }
 

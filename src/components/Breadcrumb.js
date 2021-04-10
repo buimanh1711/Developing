@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-const Breadcrumb = () => {
+const Breadcrumb = ({ category, item }) => {
   return (
     <div id='breadcrumb'>
       <div className='container'>
@@ -10,12 +10,21 @@ const Breadcrumb = () => {
               Trang chủ
             </span>
           </Link>
-          <Link to='/product'>
+          <Link style={{ marginRight: 12 }} to='/'>
             <i className="fas fa-angle-right"></i>
             <span>
-              Sản phẩm
+              {category || 'Đang cập nhật'}
             </span>
           </Link>
+          {
+            item &&
+            <a to='#'>
+              <i className="fas fa-angle-right"></i>
+              <span>
+                {item || 'Đang cập nhật'}
+              </span>
+            </a>
+          }
         </div>
       </div>
     </div>

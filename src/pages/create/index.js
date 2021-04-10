@@ -86,7 +86,7 @@ const Create = () => {
     const newCate = newCateEl.current.value.length > 0 && newCateEl.current.value || null
     const slug = toSlug(currentName)
     const currentCate = cateObj !== defaultValue.select && JSON.parse(cateObj) || null
-    if(!currentCate) return alert('Yêu cầu chọn thể loại')
+    if(!currentCate && !newCate) return alert('Yêu cầu chọn thể loại')
 
     formData.append('name', currentName)
     formData.append('content', currentContent)

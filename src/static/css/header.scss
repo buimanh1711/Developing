@@ -29,6 +29,11 @@
           margin-left: 8px;
         }
       }
+      .sign-container {
+        a {
+          margin: auto 12px;
+        }
+      }
       .admin-btn {
         .manage-notif {
           width: 12px;
@@ -100,9 +105,30 @@
     }
   }
 }
+.mb-notif {
+  display: none;
+}
 
 #mobile {
   display: none;
+  .mb-search {
+    margin-right: 12px;
+    i {
+      font-size: 1.4rem;
+    }
+  }
+
+  .mb-product-manage {
+    position: relative;
+    .manage-notif {
+      position: absolute;
+      width: 11px;
+      height: 11px;
+      background-color: rgb(248, 25, 25);
+      border-radius: 50%;
+    }
+  }
+
   .header-container {
     display: flex;
     justify-content: space-between;
@@ -120,6 +146,36 @@
         background: none;
         font-size: 1.6rem;
         color: rgb(24, 23, 23);
+      }
+
+      .notify-btn {
+        font-size: 1.5rem;
+        position: relative;
+        margin-right: 12px;
+        span {
+          position: absolute;
+          background: rgb(253, 37, 37);
+          font-size: 0.7rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 14px;
+          height: 14px;
+          top: 0;
+          right: 0;
+          border-radius: 50%;
+          color: white;
+        }
+      }
+      .menu-btn {
+        position: relative;
+        .manage-notif {
+          position: absolute;
+          width: 11px;
+          height: 11px;
+          background: rgb(250, 31, 31);
+          border-radius: 50%;
+        }
       }
     }
   }
@@ -257,7 +313,6 @@
       right: -8px;
     }
   }
-  
 }
 
 .search-modal {
@@ -281,7 +336,7 @@
   bottom: 0;
   background: rgba(136, 130, 130, 0.322);
   -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px)
+  backdrop-filter: blur(4px);
 }
 
 .search-form-container {

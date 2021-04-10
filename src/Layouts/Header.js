@@ -95,7 +95,7 @@ const Header = () => {
                   <i onClick={() => setSearchModal(true)} style={{ color: 'white', fontSize: '1.1rem', marginRight: 12, cursor: 'pointer' }} className="fas fa-search"></i>
                 </div>
                 <Link to='/products/create'>
-                  <i className="fas fa-money-bill-wave"></i>
+                  <i className="fas fa-gavel"></i>
                   <span>
                     Mở đấu giá
                 </span>
@@ -139,14 +139,6 @@ const Header = () => {
                               </Link>
                             </li>
                             <li>
-                              <Link to=''>
-                                <i className="fas fa-map-marker-alt"></i>
-                                <span>
-                                  Địa chỉ
-                            </span>
-                              </Link>
-                            </li>
-                            <li>
                               <Link to='/login'>
                                 <i className="fas fa-sign-out-alt"></i>
                                 <span>
@@ -161,8 +153,18 @@ const Header = () => {
                   </>
                   ||
                   <div className='sign-container'>
-                    <Link to='/login' className='login-btn'>Đăng nhập</Link>
-                    <Link to='/register' className='login-btn'>Đăng kí</Link>
+                    <Link to='/login' className='login-btn'>
+                      <i className="fas fa-sign-in-alt"></i>
+                      <span>
+                        Đăng nhập
+                      </span>
+                    </Link>
+                    <Link style={{ marginLeft: '0px !important' }} to='/register' className='login-btn'>
+                      <i class="fas fa-user-plus"></i>
+                      <span>
+                        Đăng kí
+                      </span>
+                    </Link>
                   </div>
                 }
                 {
@@ -220,40 +222,78 @@ const Header = () => {
               <div className='menu-container'>
                 <ul>
                   <li>
-                    <i className="fas fa-search" onClick={() => { setSearchModal(true); setMbMenu(false) }}></i>
-                  </li>
-                  <li>
                     <Link to='/products/create'>
-                      <i className="fas fa-money-bill-wave"></i>
+                      <i className="fas fa-gavel"></i>
                       <span>
                         Mở đấu giá
                       </span>
                     </Link>
                   </li>
-                  <li>
-                    <Link to={`/profile/${userId}`}>
-                      <i className="fas fa-user"></i>
-                      <span>
-                        Cá nhân
+                  {
+                    state.login &&
+                    <>
+                      <li>
+                        <Link to={`/profile/${userId}`}>
+                          <i className="fas fa-user"></i>
+                          <span>
+                            Cá nhân
                       </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to=''>
-                      <i className="fas fa-map-marker-alt"></i>
-                      <span>
-                        Địa chỉ
+                        </Link>
+                      </li>
+                      {
+                        state.user.role === 'admin' &&
+                        <>
+                          <li className='mb-product-manage'>
+                            <a onClick={() => setProductNotif(false)} href='/admin/products'>
+                              <i className="fas fa-shopping-bag"></i>
+                              <span>
+                                Quản lý sản phẩm
+                              </span>
+                              {
+                                productNotif &&
+                                <span className='manage-notif'></span>
+                              }
+                            </a>
+                          </li>
+                          <li>
+                            <a href='/admin/users'>
+                              <i className="fas fa-users"></i>
+                              <span>
+                                Quản lý người dùng
+                              </span>
+                            </a>
+                          </li>
+                        </>
+                      }
+                      <li>
+                        <Link to='/login'>
+                          <i className="fas fa-sign-out-alt"></i>
+                          <span>
+                            Đăng xuất
                       </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to='/login'>
-                      <i className="fas fa-sign-out-alt"></i>
-                      <span>
-                        Đăng xuất
-                      </span>
-                    </Link>
-                  </li>
+                        </Link>
+                      </li>
+                    </>
+                    ||
+                    <>
+                      <li>
+                        <Link to={`/login`}>
+                          <i className="fas fa-sign-in-alt"></i>
+                          <span>
+                            Đăng nhập
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to={`/register`}>
+                          <i class="fas fa-user-plus"></i>
+                          <span>
+                            Đăng kí
+                          </span>
+                        </Link>
+                      </li>
+                    </>
+                  }
                 </ul>
               </div>
             </div>
@@ -264,8 +304,26 @@ const Header = () => {
                 </a>
               </div>
               <div className='btn-wrapper'>
-                <button onClick={() => setMbMenu(true)}>
+                <button className='mb-search' onClick={() => setSearchModal(true)}>
+                  <i className="fas fa-search"></i>
+                </button>
+                {
+                  // state.login && state.user.role === 'admin' &&
+                  <button onClick={() => setNotify(!notify)} className='notify-btn'>
+                    <i className="fas fa-bell"></i>
+                    <span>{notifyList.length}</span>
+                    {
+                      notify &&
+                      <Notify notifyList={notifyList} />
+                    }
+                  </button>
+                }
+                <button className='menu-btn' onClick={() => {setMbMenu(true); setAdminNotif(false)}}>
                   <i className="fas fa-bars"></i>
+                  {
+                    adminNotif &&
+                    <span className='manage-notif'></span>
+                  }
                 </button>
               </div>
             </div>

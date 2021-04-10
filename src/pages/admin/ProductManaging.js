@@ -1,5 +1,6 @@
 import ProductList from '../../components/productList'
 import ManageFilter from '../../components/ManageFilter'
+import BreadCrumb from '../../components/Breadcrumb'
 import { useState, useEffect, useContext } from 'react'
 import api from '../../utils/axios'
 import { DataContext } from '../../store'
@@ -31,12 +32,15 @@ const ProductManager = () => {
       })
   }, [])
   return (
-    <div id='admin-product'>
-      <div className='container'>
-        <ManageFilter checkPassed={checkPassed} setCheckPassed={setCheckPassed} />
-        <ProductList checkPassed={checkPassed} setProducts={setProducts} products={products} isAdmin={true} />
+    <>
+      <BreadCrumb category='Quản lý sản phẩm' />
+      <div id='admin-product'>
+        <div className='container'>
+          <ManageFilter checkPassed={checkPassed} setCheckPassed={setCheckPassed} />
+          <ProductList checkPassed={checkPassed} setProducts={setProducts} products={products} isAdmin={true} />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

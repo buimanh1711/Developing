@@ -119,6 +119,7 @@ const Product = () => {
 
   const getProduct = (product, user) => {
     const userInfo = user || state.user
+    if(state && state.login) return alert('Bạn chưa đăng nhập')
     if ((userInfo.id || userInfo._id) !== product.seller._id) {
       state.socket.emit('get product', { product, userInfo })
     }
@@ -126,7 +127,7 @@ const Product = () => {
 
   return (
     <>
-      <Breadcrumb />
+      <Breadcrumb category='Sản phẩm' item={product && product.name || 'Đang cập nhật...'} />
       <div id='product'>
         <div className='container'>
           <div className='detail-container'>
@@ -223,7 +224,7 @@ const Product = () => {
                     <div className='player-list scroll'>
                       <ul>
                         <li className='title'>
-                          <div className='row'>
+                          <div className='row title-container'>
                             <div className='player-name col-6'>
                               <span>
                                 Tên
@@ -249,7 +250,7 @@ const Product = () => {
                         {
                           playingList.map(item =>
                             <li>
-                              <div className='row'>
+                              <div className='row title-container'>
                                 <div className='player-name col-6'>
                                   <Link to=''>
                                     {`${item.firstName} ${item.lastName}`}

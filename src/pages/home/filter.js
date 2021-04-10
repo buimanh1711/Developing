@@ -188,10 +188,10 @@ const FilterSelector = (props) => {
         </button>
       </div> */}
       <div className='opt'>
-        <div className='all-post'>
+        <div style={{marginTop: 20}} className='all-post'>
           {
             props.length > 0 &&
-            <span>{`${props.length}/${props.total}`}</span>
+            <span>{`Hiển thị: ${props.length}/${props.total}`}</span>
           }
 
           <span className='line'></span>

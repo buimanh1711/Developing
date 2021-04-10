@@ -5,6 +5,7 @@ import toSlug from '../../utils/toSlug'
 import ProductList from '../../components/productList'
 import { DataContext } from '../../store'
 import { toggleLoading } from '../../store/actions'
+import Breadcrumb from '../../components/Breadcrumb'
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -33,30 +34,33 @@ const Search = (props) => {
   }, [])
 
   return (
-    <div id='search-page'>
-      {
-        status &&
-        <>
-          {
-            products && products.length > 0 &&
-            <>
+    <>
+      <Breadcrumb category={'Tìm kiếm'} />
+      <div id='search-page'>
+        {
+          status &&
+          <>
+            {
+              products && products.length > 0 &&
+              <>
+                <div className='search-result container'>
+                  <p className='alert alert-success'>Result for '{param}' : </p>
+                </div>
+                <ProductList search={true} products={products} />
+              </>
+              ||
               <div className='search-result container'>
-                <p className='alert alert-success'>Result for '{param}' : </p>
+                <p className='alert alert-warning' style={{ color: 'rgb(223, 83, 83)' }}>No result for '{param}'!</p>
               </div>
-              <ProductList search={true} products={products} />
-            </>
-            ||
-            <div className='search-result container'>
-              <p className='alert alert-warning' style={{ color: 'rgb(223, 83, 83)' }}>No result for '{param}'!</p>
-            </div>
-          }
-        </>
-        ||
-        <div className='search-result container'>
-          <p className='alert alert-warning'>Vui lòng nhập từ khóa phù hợp</p>
-        </div>
-      }
-    </div>
+            }
+          </>
+          ||
+          <div className='search-result container'>
+            <p className='alert alert-warning'>Vui lòng nhập từ khóa phù hợp</p>
+          </div>
+        }
+      </div>
+    </>
   )
 }
 
