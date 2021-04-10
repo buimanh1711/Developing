@@ -108,7 +108,7 @@ const Create = () => {
             alert('Tạo sản phẩm thành công')
           }
         } else {
-          alert('Lỗi thêm sản phẩm')
+          alert(res.data.message)
         }
       })
       .catch(err => console.log('this is err: ', err))
