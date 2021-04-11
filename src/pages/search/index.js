@@ -28,6 +28,7 @@ const Search = (props) => {
           setProducts(res.data.products)
           dispatch(toggleLoading(false))
         } else {
+          dispatch(toggleLoading(false))
           setStatus(false)
         }
       })
